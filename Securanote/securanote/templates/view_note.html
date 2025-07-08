@@ -1,0 +1,99 @@
+<h2>{{ note.title }}</h2>
+<p>{{ decrypted }}</p>
+
+{% if note.file_path %}
+  <h5>Attached File:</h5>
+  {% set ext = note.file_path.rsplit('.', 1)[-1].lower() %}
+  
+  {% if ext in ['png', 'jpg', 'jpeg', 'gif'] %}
+    <img src="{{ file_url }}" width="300">
+  
+  {% elif ext == 'mp3' %}
+    <audio controls>
+      <source src="{{ file_url }}" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+
+  {% elif ext in ['mp4', 'webm', 'ogg'] and file_url %}
+    <video width="640" height="360" controls>
+        <source src="{{ file_url }}" type="video/{{ file_ext }}">
+        Your browser does not support the video tag.
+    </video>
+
+  {% else %}
+    <a href="{{ url_for('notes.view_file', filename=note.file_path) }}" target="_blank">Download File</a>
+  {% endif %}
+{% endif %}
+
+<hr>
+
+<form action="{{ url_for('notes.export_pdf') }}" method="POST">
+    <input type="hidden" name="title" value="{{ note.title }}">
+    <textarea name="content" style="display:none;">{{ decrypted }}</textarea>
+    {% if note.file_path %}
+        <input type="hidden" name="file_path" value="{{ note.file_path }}">
+    {% endif %}
+    <button type="submit" class="btn btn-primary">Download as PDF</button>
+</form>
+
+<hr>
+
+<h3>🔗 Share this note</h3>
+<form method="POST">
+    <label>
+        <input type="checkbox" name="view_once" id="view_once">
+        View once
+    </label><br><br>
+    <button type="submit" name="generate_link" class="btn btn-success">Generate Link</button>
+</form>
+
+{% if share_link %}
+    <div class="mt-3">
+        <p><strong>Shareable Link:</strong></p>
+        <input type="text" class="form-control" value="{{ share_link }}" readonly onclick="this.select();">
+
+        <div class="mt-2">
+            <a href="https://wa.me/?text={{ share_link | urlencode }}" target="_blank" class="btn btn-success btn-sm">Share Link via WhatsApp</a>
+            <a href="https://t.me/share/url?url={{ share_link | urlencode }}" target="_blank" class="btn btn-primary btn-sm">Share Link via Telegram</a>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=&su=Note Shared from Securanote&body={{ share_link | urlencode }}" target="_blank">
+              <button class="btn btn-dark">Share Link via Gmail</button>
+            </a>
+
+        </div>
+    </div>
+{% endif %}
+
+{% if qr_code_base64 %}
+  <p><strong>QR Code:</strong></p>
+  <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="QR Code" style="max-width: 200px;">
+
+  <div class="mt-3">
+    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=&su=QR%20Code%20for%20Your%20Note&body=Hi,%0A%0AHere%20is%20the%20QR%20code%20for%20accessing%20my%20note:%0A{{ qr_image_url | urlencode }}%0A%0AScan%20it%20to%20view%20the%20note.%0A" target="_blank">
+      <button class="btn btn-dark">Share QR via Gmail</button>
+    </a>
+
+    <a href="data:image/png;base64,{{ qr_code_base64 }}" download="qr_code.png">
+      <button class="btn btn-secondary">Download QR Code</button>
+    </a>
+
+    <p class="text-muted mt-2">To share via WhatsApp or Telegram, download the QR image and upload it manually.</p>
+  </div>
+{% endif %}
+
+<hr>
+
+<p><a href="{{ url_for('notes.dashboard') }}">Back to Dashboard</a></p>
+
+<script>
+function shareQR() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Secure Note QR Code',
+            text: 'Here is your QR code to access the note.',
+            url: "{{ qr_image_url }}"
+        }).catch((error) => console.log('Share failed:', error));
+    } else {
+        alert("Sharing not supported on this browser.");
+    }
+}
+</script>
