@@ -13,10 +13,10 @@ limiter = Limiter(
     app=app,
     default_limits=["100 per hour"]
 )
-
 @app.route("/")
+@app.route("/index")
 def index():
-    return redirect("/login")
+    return render_template("index.html")
 
 @app.route("/video")
 def serve_chacha_video():
