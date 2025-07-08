@@ -15,8 +15,7 @@ limiter = Limiter(
     default_limits=["100 per hour"]
 )
 @app.route("/")
-@app.route("/index")
-def index():
+def home():
     return render_template("index.html")
 
 @app.route("/video")
