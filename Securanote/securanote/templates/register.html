@@ -1,230 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Register | SecuraNote</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     body {
       margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to right, #6e67f0, #a773f0);
+      font-family: 'Space Grotesk', sans-serif;
+      background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
       height: 100vh;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       overflow: hidden;
       position: relative;
     }
 
-    .dot {
+    .circle {
       position: absolute;
-      background: rgba(255,255,255,0.1);
       border-radius: 50%;
-      z-index: 0;
+      background: rgba(255, 255, 255, 0.1);
     }
 
-    .dot1 { width: 100px; height: 100px; top: 10%; left: 10%; }
-    .dot2 { width: 60px; height: 60px; bottom: 10%; right: 15%; }
-    .dot3 { width: 40px; height: 40px; top: 60%; left: 20%; }
+    .circle1 { width: 100px; height: 100px; top: 10%; left: 10%; }
+    .circle2 { width: 150px; height: 150px; top: 70%; left: 80%; }
+    .circle3 { width: 80px; height: 80px; top: 50%; left: 30%; }
 
-    .container {
-      background: #ffffff;
-      padding: 2rem 3rem;
-      max-width: 600px;
-      width: 100%;
+    .card {
+      background: #fff;
+      padding: 2.5rem;
       border-radius: 16px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-      position: relative;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
       z-index: 2;
-      text-align: center;
     }
 
     h2 {
-      font-size: 26px;
-      font-weight: 600;
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
       margin-bottom: 0.5rem;
     }
 
     p.subtitle {
-      color: #555;
+      text-align: center;
+      color: #666;
       font-size: 14px;
       margin-bottom: 2rem;
     }
 
-    .steps {
+    .step-indicator {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       margin-bottom: 2rem;
+      padding: 0 2rem;
     }
 
     .step {
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      background-color: #6e67f0;
-      color: white;
+      background: #e0e0e0;
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
-      margin: 0 5px;
+      font-weight: bold;
     }
 
-    form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      text-align: left;
+    .step.active {
+      background: #4f46e5;
     }
 
     form p {
-      margin: 0;
+      margin-bottom: 1.2rem;
     }
 
-    input[type="text"], input[type="email"], input[type="password"] {
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
       width: 100%;
-      padding: 10px;
-      border-radius: 8px;
+      padding: 10px 12px;
+      border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 14px;
     }
 
-    #password-requirements {
-      font-size: 12px;
-      grid-column: span 2;
-      margin-top: 0.5rem;
+    input[type="checkbox"] {
+      margin-right: 8px;
     }
 
-    #password-requirements ul {
-      padding-left: 1rem;
-      margin: 0.5rem 0;
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
     }
 
-    .valid {
-      color: #00c853;
-    }
-
-    .invalid {
-      color: #d50000;
-    }
-
-    #show-password {
-      margin-top: 10px;
-    }
-
-    button[type="submit"],
-    input[type="submit"] {
-      grid-column: span 2;
-      padding: 12px;
-      background: #6e67f0;
+    button[type="submit"] {
+      width: 100%;
+      background-color: #4f46e5;
+      color: #fff;
       border: none;
-      border-radius: 8px;
-      color: white;
+      padding: 12px;
       font-size: 16px;
-      margin-top: 1.5rem;
+      border-radius: 8px;
       cursor: pointer;
+      margin-top: 1rem;
     }
 
     .footer-link {
-      grid-column: span 2;
       text-align: center;
-      margin-top: 1.5rem;
-      font-size: 14px;
+      margin-top: 1rem;
+      font-size: 13px;
     }
 
     .footer-link a {
-      color: #6e67f0;
+      color: #4f46e5;
       text-decoration: none;
-      font-weight: 500;
     }
 
     .footer-link a:hover {
       text-decoration: underline;
     }
 
+    #password-requirements {
+      font-size: 12px;
+      margin-top: 0.5rem;
+      color: #666;
+    }
+
+    .valid { color: #00c853; }
+    .invalid { color: #d50000; }
   </style>
 </head>
 <body>
+  <div class="circle circle1"></div>
+  <div class="circle circle2"></div>
+  <div class="circle circle3"></div>
 
-<div class="dot dot1"></div>
-<div class="dot dot2"></div>
-<div class="dot dot3"></div>
+  <div class="card">
+    <h2>Create Your Account</h2>
+    <p class="subtitle">Join our community and get started today</p>
 
-<div class="container animate__animated animate__fadeIn">
-  <h2>Create Your Account</h2>
-  <p class="subtitle">Join our community and get started today</p>
-
-  <div class="steps">
-    <div class="step">1</div>
-    <div class="step" style="background: #ccc;">2</div>
-    <div class="step" style="background: #ccc;">3</div>
-  </div>
-
-  <form method="POST">
-    {{ form.hidden_tag() }}
-    
-    <p>
-      {{ form.username.label }}<br>
-      {{ form.username(size=32) }}
-    </p>
-    <p>
-      {{ form.email.label }}<br>
-      {{ form.email(size=32) }}
-    </p>
-    <p>
-      {{ form.password.label }}<br>
-      {{ form.password(size=32, id='password', type='password') }}
-    </p>
-    <p>
-      <label><input type="checkbox" id="show-password"> Show Password</label>
-    </p>
-
-    <div id="password-requirements">
-      <p>Password must include:</p>
-      <ul>
-        <li id="length" class="invalid">At least 8 characters</li>
-        <li id="uppercase" class="invalid">An uppercase letter</li>
-        <li id="lowercase" class="invalid">A lowercase letter</li>
-        <li id="number" class="invalid">A number</li>
-        <li id="special" class="invalid">A special character (!@#$%^&* etc.)</li>
-      </ul>
+    <div class="step-indicator">
+      <div class="step active">1</div>
+      <div class="step">2</div>
+      <div class="step">3</div>
     </div>
 
-    <p>{{ form.submit() }}</p>
-  </form>
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <p>
+        <label>{{ form.username.label }}</label>
+        {{ form.username(size=32) }}
+      </p>
+      <p>
+        <label>{{ form.email.label }}</label>
+        {{ form.email(size=32, type='email') }}
+      </p>
+      <p>
+        <label>{{ form.password.label }}</label>
+        {{ form.password(size=32, id='password', type='password') }}
+        <label><input type="checkbox" id="show-password"> Show Password</label>
+      </p>
 
-  <div class="footer-link">
-    Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a><br>
-    <span style="font-size: 12px;">This is a demo registration page</span>
+      <div id="password-requirements">
+        <p>Password must include:</p>
+        <ul>
+          <li id="length" class="invalid">At least 8 characters</li>
+          <li id="uppercase" class="invalid">An uppercase letter</li>
+          <li id="lowercase" class="invalid">A lowercase letter</li>
+          <li id="number" class="invalid">A number</li>
+          <li id="special" class="invalid">A special character</li>
+        </ul>
+      </div>
+
+      <p>{{ form.submit(class_="btn btn-primary") }}</p>
+    </form>
+
+    <div class="footer-link">
+      Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a>
+    </div>
   </div>
-</div>
 
-<script>
-  const passwordInput = document.getElementById('password');
-  const showPassword = document.getElementById('show-password');
-  const length = document.getElementById('length');
-  const uppercase = document.getElementById('uppercase');
-  const lowercase = document.getElementById('lowercase');
-  const number = document.getElementById('number');
-  const special = document.getElementById('special');
+  <script>
+    const passwordInput = document.getElementById('password');
+    const showPassword = document.getElementById('show-password');
+    const length = document.getElementById('length');
+    const uppercase = document.getElementById('uppercase');
+    const lowercase = document.getElementById('lowercase');
+    const number = document.getElementById('number');
+    const special = document.getElementById('special');
 
-  // Toggle password visibility
-  showPassword.addEventListener('change', function () {
-    passwordInput.type = this.checked ? 'text' : 'password';
-  });
+    showPassword.addEventListener('change', function () {
+      passwordInput.type = this.checked ? 'text' : 'password';
+    });
 
-  // Live password validation
-  passwordInput.addEventListener('input', function () {
-    const value = passwordInput.value;
-    length.className = value.length >= 8 ? 'valid' : 'invalid';
-    uppercase.className = /[A-Z]/.test(value) ? 'valid' : 'invalid';
-    lowercase.className = /[a-z]/.test(value) ? 'valid' : 'invalid';
-    number.className = /[0-9]/.test(value) ? 'valid' : 'invalid';
-    special.className = /[\W_]/.test(value) ? 'valid' : 'invalid';
-  });
-</script>
-
+    passwordInput.addEventListener('input', function () {
+      const value = passwordInput.value;
+      length.className = value.length >= 8 ? 'valid' : 'invalid';
+      uppercase.className = /[A-Z]/.test(value) ? 'valid' : 'invalid';
+      lowercase.className = /[a-z]/.test(value) ? 'valid' : 'invalid';
+      number.className = /[0-9]/.test(value) ? 'valid' : 'invalid';
+      special.className = /[\W_]/.test(value) ? 'valid' : 'invalid';
+    });
+  </script>
 </body>
 </html>
