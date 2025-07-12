@@ -13,16 +13,16 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      cursor: url('https://cdn-icons-png.flaticon.com/512/892/892692.png') 16 16, auto;
     }
 
     body, html {
       height: 100%;
       font-family: 'Poppins', sans-serif;
       color: #fff;
-      background: url("static/background.jpg") no-repeat center center fixed;
+      background: url("/static/background.jpg") no-repeat center center fixed;
       background-size: cover;
       animation: floatBG 40s ease-in-out infinite alternate;
-      cursor: none; /* Hide default pointer */
     }
 
     @keyframes floatBG {
@@ -141,26 +141,9 @@
       text-align: center;
       opacity: 0.75;
     }
-
-    /* Round mouse pointer */
-    #cursor {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 20px;
-      height: 20px;
-      background-color: rgba(255, 126, 95, 0.9); /* Orange round */
-      border-radius: 50%;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      transition: transform 0.1s ease;
-      z-index: 9999;
-      mix-blend-mode: difference;
-    }
   </style>
 </head>
 <body>
-
   <nav>
     <div class="logo">Securanote</div>
     <ul>
@@ -203,17 +186,5 @@
   <footer>
     &copy; 2025 Securanote. All rights reserved.
   </footer>
-
-  <!-- ✅ Custom round cursor added -->
-  <div id="cursor"></div>
-
-  <script>
-    const cursor = document.getElementById('cursor');
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.top = e.clientY + 'px';
-      cursor.style.left = e.clientX + 'px';
-    });
-  </script>
-
 </body>
 </html>
