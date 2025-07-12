@@ -1,54 +1,202 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <style>
-        .message-error { color: red; }
-        .message-success { color: green; }
-        .message-info { color: blue; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #6e67f0, #a773f0);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .container {
+      background: white;
+      padding: 2rem;
+      width: 360px;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+      position: relative;
+    }
+
+    .container h2 {
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+
+    .container p.subtitle {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 1.5rem;
+    }
+
+    .avatar {
+      width: 50px;
+      height: 50px;
+      background-color: #a773f0;
+      border-radius: 50%;
+      margin: 0 auto 1rem auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      color: white;
+    }
+
+    form {
+      text-align: left;
+    }
+
+    input[type="text"], input[type="password"], input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 1rem;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #6e67f0;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+      margin-bottom: 1rem;
+    }
+
+    .links {
+      font-size: 14px;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .links a {
+      color: #6e67f0;
+      text-decoration: none;
+    }
+
+    .message-error { color: red; }
+    .message-success { color: green; }
+    .message-info { color: blue; }
+
+    .social-icons {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .social-icons i {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #ccc;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dot {
+      position: absolute;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      z-index: 0;
+    }
+
+    .dot1 { width: 100px; height: 100px; top: 10%; left: 10%; }
+    .dot2 { width: 60px; height: 60px; top: 80%; left: 80%; }
+    .dot3 { width: 40px; height: 40px; top: 50%; left: 20%; }
+
+    #cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1000;
+      transform: translate(-50%, -50%);
+    }
+  </style>
 </head>
 <body>
 
-<h2>Login</h2>
+<div class="dot dot1"></div>
+<div class="dot dot2"></div>
+<div class="dot dot3"></div>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul>
-      {% for category, message in messages %}
-        <li class="message-{{ category }}">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+<div class="container">
+  <h2>Create Account</h2>
+  <p class="subtitle">Join us by creating a new account</p>
 
-<form method="POST">
+  <div class="avatar">
+    <span>📝</span>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul>
+        {% for category, message in messages %}
+          <li class="message-{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST">
     {{ form.hidden_tag() }}
-
-    <p>{{ form.username.label }}<br>{{ form.username(size=30) }}</p>
+    <p>{{ form.name.label }}<br>{{ form.name(size=30) }}</p>
+    <p>{{ form.email.label }}<br>{{ form.email(size=30) }}</p>
     <p>{{ form.password.label }}<br>{{ form.password(size=30, id='password') }}</p>
+    <p>{{ form.confirm_password.label }}<br>{{ form.confirm_password(size=30, id='confirm_password') }}</p>
 
-    <label><input type="checkbox" onclick="togglePassword()"> Show Password</label><br><br>
-    <label>{{ form.remember() }} Remember Me</label><br><br>
+    <label class="checkbox-label"><input type="checkbox" onclick="togglePassword()"> Show Passwords</label>
 
-    <button type="submit">Login</button>
-</form>
+    <button type="submit">Register</button>
+  </form>
 
-<p>
-    <a href="{{ url_for('auth.forgot_password') }}">Forgot Password?</a><br>
-    <a href="{{ url_for('auth.register') }}">Don't have an account? Register</a>
-</p>
+  <div class="links">
+    Already have an account? <a href="{{ url_for('auth.login') }}">Login</a>
+  </div>
+
+  <div class="social-icons">
+    <i>🔘</i>
+    <i>🔘</i>
+    <i>🔘</i>
+  </div>
+
+  <p style="font-size: 12px; margin-top: 1rem;">This is a demo registration page</p>
+</div>
 
 <script>
-    function togglePassword() {
-        const pwdField = document.getElementById("password");
-        pwdField.type = pwdField.type === "password" ? "text" : "password";
-    }
+  function togglePassword() {
+    const pwd1 = document.getElementById("password");
+    const pwd2 = document.getElementById("confirm_password");
+    pwd1.type = pwd1.type === "password" ? "text" : "password";
+    pwd2.type = pwd2.type === "password" ? "text" : "password";
+  }
 </script>
-    <!-- Custom round cursor -->
-<div id="cursor"></div>
 
+<!-- Custom Cursor -->
+<div id="cursor"></div>
 <script>
   const cursor = document.getElementById('cursor');
   document.addEventListener('mousemove', (e) => {
@@ -56,7 +204,6 @@
     cursor.style.left = e.clientX + 'px';
   });
 </script>
-
 
 </body>
 </html>
