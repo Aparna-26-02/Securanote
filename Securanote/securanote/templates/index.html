@@ -2,218 +2,347 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Welcome to Securanote</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SecuraNote</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
+
     html {
       scroll-behavior: smooth;
     }
 
-    * {
+    body {
       margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: #fff;
+      color: #0e1128;
+      background-image: radial-gradient(#0e1128 1px, transparent 1px);
+      background-size: 20px 20px;
     }
 
-    body, html {
-      height: 100%;
-      font-family: 'Poppins', sans-serif;
-      color: #fff;
-      background: url("static/background.jpg") no-repeat center center fixed;
-      background-size: cover;
-      animation: floatBG 40s ease-in-out infinite alternate;
-      cursor: none; /* Hide default pointer */
-    }
-
-    @keyframes floatBG {
-      0% { background-position: center top; }
-      100% { background-position: center bottom; }
-    }
-
-    nav {
-      width: 100%;
-      padding: 20px 40px;
-      background: rgba(0, 0, 0, 0.7);
-      position: fixed;
-      top: 0;
-      left: 0;
+    header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 1rem 3rem;
+      background-color: #ffffff;
+      position: sticky;
+      top: 0;
       z-index: 1000;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
 
-    nav .logo {
-      font-size: 1.6em;
-      font-weight: 700;
-      color: #ff7e5f;
-    }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 30px;
-    }
-
-    nav ul li a {
-      color: #fff;
+    nav a {
+      margin: 0 1rem;
       text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s ease;
+      color: #0e1128;
+      font-weight: bold;
+      font-size: 14px;
     }
 
-    nav ul li a:hover {
-      color: #ffb36b;
+    .btn {
+      padding: 0.6rem 1.6rem;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
     }
 
-    .container {
-      margin-top: 120px;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 40px 30px;
-      border-radius: 25px;
-      text-align: center;
-      max-width: 800px;
-      width: 90%;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 35px rgba(0,0,0,0.5);
-      margin-left: auto;
-      margin-right: auto;
-      animation: fadeInUp 2s ease forwards;
+    .btn-primary {
+      background-color: #ff6c0e;
+      color: white;
+      border: none;
     }
 
-    @keyframes fadeInUp {
-      0% {opacity: 0; transform: translateY(40px);}
-      100% {opacity: 1; transform: translateY(0);}
+    .btn-outline {
+      border: 2px solid #ff6c0e;
+      color: #ff6c0e;
+      background: transparent;
     }
 
-    h1 {
-      font-size: 3em;
-      margin-bottom: 25px;
-      color: #ffffff;
-      text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+    .hero {
+      padding: 5rem 3rem;
+      background: #ffffff;
     }
 
-    p {
-      font-size: 1.2em;
-      line-height: 1.8;
-      margin-bottom: 35px;
+    .hero h1 {
+      font-size: 60px;
+      font-weight: 700;
+      color: #0e1128;
+      line-height: 1.1;
+      margin: 0;
+    }
+
+    .hero span {
+      background: linear-gradient(to right, #f57c00, #8bc34a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      margin-top: 1.2rem;
+      font-size: 18px;
+      color: #3a3f58;
     }
 
     .buttons {
+      margin-top: 2.5rem;
+    }
+
+    .section {
+      padding: 5rem 3rem;
+      color: #fff;
+      background: linear-gradient(180deg, #002766 0%, #004080 100%);
+    }
+
+    .section.light {
+      background: #f4f7fa;
+      color: #0e1128;
+    }
+
+    .section h2 {
+      font-size: 36px;
+      margin-bottom: 2.5rem;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .card-container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 25px;
+      gap: 2rem;
     }
 
-    .buttons a {
-      text-decoration: none;
-      color: white;
-      background: linear-gradient(135deg, #ff7e5f, #feb47b);
-      padding: 14px 32px;
-      border-radius: 50px;
-      font-size: 1.1em;
-      font-weight: 600;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
-      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    .card {
+      background: white;
+      color: #0e1128;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      max-width: 320px;
+      flex: 1 1 300px;
     }
 
-    .buttons a:hover {
-      transform: translateY(-8px) scale(1.07);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+    .card h3 {
+      color: #ff6c0e;
+      font-size: 20px;
+      margin-bottom: 1rem;
     }
 
-    section {
-      max-width: 900px;
-      margin: 60px auto;
-      padding: 40px;
-      background: rgba(0, 0, 0, 0.65);
-      border-radius: 25px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 30px rgba(0,0,0,0.5);
-      text-align: center;
+    .solar-lock-system {
+      position: relative;
+      width: 200px;
+      height: 200px;
     }
 
-    footer {
-      margin-top: 60px;
-      font-size: 0.9em;
-      text-align: center;
-      opacity: 0.75;
-    }
-
-    /* Round mouse pointer */
-    #cursor {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 20px;
-      height: 20px;
-      background-color: rgba(255, 126, 95, 0.9); /* Orange round */
+    .center-circle {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background-color: #0e1128;
       border-radius: 50%;
-      pointer-events: none;
+      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
-      transition: transform 0.1s ease;
-      z-index: 9999;
-      mix-blend-mode: difference;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .center-circle img {
+      width: 20px;
+    }
+
+    .orbit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border: 1px dashed #aaa;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .orbit.outer {
+      width: 180px;
+      height: 180px;
+      animation: spin 20s linear infinite;
+    }
+
+    .orbit.middle {
+      width: 120px;
+      height: 120px;
+      animation: spin 15s linear infinite;
+    }
+
+    .orbit.inner {
+      width: 80px;
+      height: 80px;
+      animation: spin 10s linear infinite;
+    }
+
+    .planet {
+      width: 10px;
+      height: 10px;
+      background-color: #ff6c0e;
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .planet.green { background-color: #00c853; }
+    .planet.orange { background-color: #ff6c0e; }
+
+    @keyframes spin {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .footer {
+      background: #0e1128;
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-
-  <nav>
-    <div class="logo">Securanote</div>
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/login">Login</a></li>
-      <li><a href="/register">Register</a></li>
-      <li><a href="#contact">Contact</a></li>
-      <li><a href="#help">Help</a></li>
-    </ul>
-  </nav>
-
-  <div class="container">
-    <h1>Welcome to Securanote</h1>
-    <p>
-      <strong>Securanote</strong> is your encrypted digital vault for notes and files. It uses advanced cryptographic techniques such as <strong>AES</strong> and <strong>ChaCha20</strong> to secure your content.
-    </p>
-    <p>
-      Your data is safely stored in <strong>AWS S3</strong>. Share notes through secure, view-once links or dynamic QR codes, giving you full control over who sees what and when.
-    </p>
-
-    <div class="buttons">
-      <a href="/login">Login</a>
-      <a href="/register">Register</a>
+  <header>
+    <div style="display: flex; align-items: center;">
+      <img src="https://img.icons8.com/ios-filled/50/lock--v1.png" alt="lock" style="height: 28px; margin-right: 10px;" />
+      <h2 style="margin: 0; color: #0e1128; font-weight: 700;">SECURANOTE</h2>
     </div>
-  </div>
+    <nav>
+      <a href="#features">FEATURES</a>
+      <a href="#security">SECURITY</a>
+      <a href="#pricing">PRICING</a>
+      <a href="#about">ABOUT</a>
+      <a href="login.html">LOGIN</a>
+      <a href="register.html" class="btn btn-primary">GET STARTED</a>
+    </nav>
+  </header>
 
-  <section id="contact">
-    <h2>Contact Us</h2>
-    <p>If you have questions, issues, or feedback, reach out to us at:</p>
-    <p><strong>Email:</strong> support@securanote.com</p>
-    <p><strong>Phone:</strong> +91-98765-43210</p>
+  <section class="hero animate__animated animate__fadeIn" id="home">
+    <h1>NEXT-GEN <span>SECURITY</span> FOR YOUR DIGITAL ASSETS</h1>
+    <p>Military-grade encryption for your notes, images, and videos with three-pin authentication and secure S3 storage.</p>
+    <div class="buttons">
+      <a href="#features" class="btn btn-primary">START ENCRYPTING</a>
+      <a href="#how" class="btn btn-outline">LEARN MORE</a>
+    </div>
   </section>
 
-  <section id="help">
-    <h2>Help & Support</h2>
-    <p>Need help using Securanote? Visit our documentation or reach out to our support team.</p>
-    <p>We’re here to help you encrypt, store, and share your data securely!</p>
+  <section class="section light animate__animated animate__fadeInUp" id="features">
+    <h2>OUR SOLAR SECURITY SYSTEM</h2>
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 3rem;">
+      <div style="flex: 1; min-width: 300px; max-width: 500px;">
+        <p style="font-size: 18px; line-height: 1.6; color: #3a3f58;">
+          Our advanced security protocols work around the clock to ensure your data remains protected at all times.
+        </p>
+        <ul style="list-style: none; padding-left: 0; margin-top: 2rem;">
+          <li style="margin-bottom: 1.5rem;"><strong style="color: #ff6c0e;">REAL-TIME THREAT MONITORING</strong><br><span style="color: #3a3f58;">Our systems continuously monitor for potential security threats and vulnerabilities.</span></li>
+          <li style="margin-bottom: 1.5rem;"><strong style="color: #00c853;">AUTOMATIC SECURITY UPDATES</strong><br><span style="color: #3a3f58;">We implement the latest security patches and updates automatically to keep your data safe.</span></li>
+          <li><strong style="color: #ff6c0e;">REDUNDANT BACKUP SYSTEMS</strong><br><span style="color: #3a3f58;">Multiple backup systems ensure your encrypted data is never lost or compromised.</span></li>
+        </ul>
+      </div>
+      <div class="solar-lock-system">
+        <div class="center-circle">
+          <img src="https://img.icons8.com/ios-filled/50/lock--v1.png" alt="lock" />
+        </div>
+        <div class="orbit outer">
+          <div class="planet delay1"></div>
+          <div class="planet delay2"></div>
+          <div class="planet delay3"></div>
+        </div>
+        <div class="orbit middle">
+          <div class="planet green"></div>
+        </div>
+        <div class="orbit inner">
+          <div class="planet orange"></div>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <footer>
-    &copy; 2025 Securanote. All rights reserved.
+  <section class="section animate__animated animate__fadeInUp" id="security">
+    <h2>ADVANCED SECURITY FEATURES</h2>
+    <div class="card-container">
+      <div class="card">
+        <h3>END-TO-END ENCRYPTION</h3>
+        <p>Your data is encrypted before it leaves your device and can only be decrypted with your unique keys.</p>
+      </div>
+      <div class="card">
+        <h3>THREE-PIN AUTHENTICATION</h3>
+        <p>An additional layer of security with a three-pin authentication system to access your encrypted data.</p>
+      </div>
+      <div class="card">
+        <h3>S3 SECURE STORAGE</h3>
+        <p>Your encrypted data is stored in Amazon S3 with additional security measures to ensure maximum protection.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section light animate__animated animate__fadeInUp" id="pricing">
+    <h2>SECURE ALL YOUR DATA TYPES</h2>
+    <div class="card-container">
+      <div class="card">
+        <h3>ENCRYPTED NOTES</h3>
+        <p>Securely store your sensitive text notes with our advanced encryption technology.</p>
+      </div>
+      <div class="card">
+        <h3>ENCRYPTED IMAGES</h3>
+        <p>Keep your private photos and images safe with end-to-end encryption.</p>
+      </div>
+      <div class="card">
+        <h3>ENCRYPTED VIDEOS</h3>
+        <p>Protect your confidential videos with our secure encryption technology.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section light animate__animated animate__fadeInUp" id="how">
+    <h2>HOW SECURANOTE WORKS</h2>
+    <div class="card-container">
+      <div class="card">
+        <h3>UPLOAD</h3>
+        <p>Upload your notes, images, or videos to the SecuraNote platform.</p>
+      </div>
+      <div class="card">
+        <h3>ENCRYPT</h3>
+        <p>Your data is encrypted with military-grade encryption algorithms.</p>
+      </div>
+      <div class="card">
+        <h3>STORE</h3>
+        <p>Encrypted data is securely stored in Amazon S3 storage.</p>
+      </div>
+      <div class="card">
+        <h3>ACCESS</h3>
+        <p>Access your data anytime with your three-pin authentication.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section animate__animated animate__fadeInUp" id="about">
+    <h2>SECURITY THAT NEVER SLEEPS</h2>
+    <div class="card-container">
+      <div class="card">
+        <h3>REAL-TIME THREAT MONITORING</h3>
+        <p>Our systems continuously monitor for potential security threats and vulnerabilities.</p>
+      </div>
+      <div class="card">
+        <h3>AUTOMATIC SECURITY UPDATES</h3>
+        <p>We implement the latest security patches and updates automatically to keep your data safe.</p>
+      </div>
+      <div class="card">
+        <h3>REDUNDANT BACKUP SYSTEMS</h3>
+        <p>Multiple backup systems ensure your encrypted data is never lost or compromised.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    &copy; 2025 SecuraNote. All rights reserved.
   </footer>
-
-  <!-- ✅ Custom round cursor added -->
-  <div id="cursor"></div>
-
-  <script>
-    const cursor = document.getElementById('cursor');
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.top = e.clientY + 'px';
-      cursor.style.left = e.clientX + 'px';
-    });
-  </script>
-
 </body>
 </html>
