@@ -1,70 +1,164 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Register</title>
-    <style>
-        .valid { color: green; }
-        .invalid { color: red; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Register | SecuraNote</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: #f4f7fa;
+      color: #0e1128;
+      background-image: radial-gradient(#e0e7ff 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 5rem auto;
+      background: #ffffff;
+      padding: 3rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 2rem;
+      color: #002766;
+    }
+
+    form p {
+      margin-bottom: 1.5rem;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    input[type="checkbox"] {
+      margin-top: 0.6rem;
+    }
+
+    label {
+      font-weight: 500;
+      color: #3a3f58;
+    }
+
+    #password-requirements {
+      font-size: 14px;
+      margin-top: 0.5rem;
+    }
+
+    .valid {
+      color: #00c853;
+    }
+
+    .invalid {
+      color: #d50000;
+    }
+
+    button[type="submit"],
+    input[type="submit"] {
+      background-color: #ff6c0e;
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1.5rem;
+    }
+
+    .footer-link {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .footer-link a {
+      color: #004080;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer-link a:hover {
+      text-decoration: underline;
+    }
+
+  </style>
 </head>
 <body>
+  <div class="container animate__animated animate__fadeIn">
     <h2>Register</h2>
     <form method="POST">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}
-        </p>
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32) }}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32, id='password', type='password') }}
-            <br>
-            <input type="checkbox" id="show-password"> Show Password
-        </p>
+      {{ form.hidden_tag() }}
+      <p>
+        {{ form.username.label }}<br>
+        {{ form.username(size=32) }}
+      </p>
+      <p>
+        {{ form.email.label }}<br>
+        {{ form.email(size=32) }}
+      </p>
+      <p>
+        {{ form.password.label }}<br>
+        {{ form.password(size=32, id='password', type='password') }}<br>
+        <input type="checkbox" id="show-password"> Show Password
+      </p>
 
-        <div id="password-requirements">
-            <p>Password must include:</p>
-            <ul>
-                <li id="length" class="invalid">At least 8 characters</li>
-                <li id="uppercase" class="invalid">An uppercase letter</li>
-                <li id="lowercase" class="invalid">A lowercase letter</li>
-                <li id="number" class="invalid">A number</li>
-                <li id="special" class="invalid">A special character (!@#$%^&* etc.)</li>
-            </ul>
-        </div>
+      <div id="password-requirements">
+        <p>Password must include:</p>
+        <ul>
+          <li id="length" class="invalid">At least 8 characters</li>
+          <li id="uppercase" class="invalid">An uppercase letter</li>
+          <li id="lowercase" class="invalid">A lowercase letter</li>
+          <li id="number" class="invalid">A number</li>
+          <li id="special" class="invalid">A special character (!@#$%^&* etc.)</li>
+        </ul>
+      </div>
 
-        <p>{{ form.submit() }}</p> 
+      <p>{{ form.submit() }}</p>
     </form>
-    <p>Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a></p>
 
-    <script>
-        const passwordInput = document.getElementById('password');
-        const showPassword = document.getElementById('show-password');
-        const length = document.getElementById('length');
-        const uppercase = document.getElementById('uppercase');
-        const lowercase = document.getElementById('lowercase');
-        const number = document.getElementById('number');
-        const special = document.getElementById('special');
+    <div class="footer-link">
+      Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a>
+    </div>
+  </div>
 
-        // Toggle password visibility
-        showPassword.addEventListener('change', function () {
-            passwordInput.type = this.checked ? 'text' : 'password';
-        });
+  <script>
+    const passwordInput = document.getElementById('password');
+    const showPassword = document.getElementById('show-password');
+    const length = document.getElementById('length');
+    const uppercase = document.getElementById('uppercase');
+    const lowercase = document.getElementById('lowercase');
+    const number = document.getElementById('number');
+    const special = document.getElementById('special');
 
-        // Live password validation
-        passwordInput.addEventListener('input', function () {
-            const value = passwordInput.value;
+    // Toggle password visibility
+    showPassword.addEventListener('change', function () {
+      passwordInput.type = this.checked ? 'text' : 'password';
+    });
 
-            length.className = value.length >= 8 ? 'valid' : 'invalid';
-            uppercase.className = /[A-Z]/.test(value) ? 'valid' : 'invalid';
-            lowercase.className = /[a-z]/.test(value) ? 'valid' : 'invalid';
-            number.className = /[0-9]/.test(value) ? 'valid' : 'invalid';
-            special.className = /[\W_]/.test(value) ? 'valid' : 'invalid';
-        });
-    </script>
+    // Live password validation
+    passwordInput.addEventListener('input', function () {
+      const value = passwordInput.value;
+      length.className = value.length >= 8 ? 'valid' : 'invalid';
+      uppercase.className = /[A-Z]/.test(value) ? 'valid' : 'invalid';
+      lowercase.className = /[a-z]/.test(value) ? 'valid' : 'invalid';
+      number.className = /[0-9]/.test(value) ? 'valid' : 'invalid';
+      special.className = /[\W_]/.test(value) ? 'valid' : 'invalid';
+    });
+  </script>
 </body>
 </html>
