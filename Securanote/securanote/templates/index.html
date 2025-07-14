@@ -1,237 +1,247 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SecuraNote</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Securanote</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    :root {
+      --primary: #ff6b00;
+      --dark: #0f1629;
+      --accent: #00b67a;
+      --highlight: #6dd47e;
+      --gradient-orange: linear-gradient(to right, #f28e1c, #e57f1e);
+      --gradient-green: linear-gradient(to right, #85c240, #4caf50);
+    }
+
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
-    }
-    html {
+      box-sizing: border-box;
       scroll-behavior: smooth;
+      font-family: 'Segoe UI', sans-serif;
     }
+
     body {
-      font-family: 'Space Grotesk', sans-serif;
-      background-color: #fff;
-      background-image: radial-gradient(#000 1px, transparent 1px);
-      background-size: 20px 20px;
-      cursor: none;
+      background: #f8f9fc;
+      color: var(--dark);
     }
-    .custom-cursor {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #ff6c0e;
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-      transition: transform 0.1s ease;
-    }
+
     header {
+      background: white;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       position: sticky;
       top: 0;
-      background: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
       z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
-    header .logo {
-      font-weight: 700;
-      font-size: 20px;
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
     }
+
+    .logo-icon {
+      width: 25px;
+      height: 25px;
+      background: var(--primary);
+      border-radius: 5px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
     nav a {
-      margin: 0 0.75rem;
       text-decoration: none;
-      font-weight: bold;
-      color: #0e1128;
+      margin: 0 15px;
+      color: var(--dark);
+      font-weight: 500;
     }
+
     .btn {
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
+      padding: 10px 20px;
+      background: var(--primary);
+      color: white;
       font-weight: bold;
       text-decoration: none;
-      margin-left: 10px;
+      border-radius: 4px;
     }
-    .btn-primary {
-      background: #ff6c0e;
-      color: #fff;
-    }
-    .hero {
-      padding: 6rem 2rem;
-      text-align: center;
-      position: relative;
-    }
-    .hero h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      line-height: 1.2;
-    }
-    .hero span {
-      background: linear-gradient(to right, #f57c00, #8bc34a);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .hero p {
-      font-size: 1.1rem;
-      color: #444;
-      margin: 1rem 0 2rem;
-    }
-    .solar-animation {
-      position: absolute;
-      right: 5%;
-      top: 10%;
-      width: 150px;
-      height: 150px;
-      border: 2px dotted #ccc;
-      border-radius: 50%;
-      animation: spin 20s linear infinite;
-    }
-    .solar-animation::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 20px;
-      height: 20px;
-      background: #ff6c0e;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-    }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
+
     section {
-      padding: 4rem 2rem;
-    }
-    .section-title {
+      padding: 80px 40px;
       text-align: center;
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
     }
-    .section-subtitle {
-      text-align: center;
-      margin-bottom: 2rem;
-      color: #666;
+
+    .hero {
+      background: #fff;
+      font-size: 40px;
+      font-weight: bold;
+      padding: 120px 20px 100px;
     }
+
+    .hero span.orange {
+      background: var(--gradient-orange);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero span.green {
+      background: var(--gradient-green);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
     .grid {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 1.5rem;
+      gap: 40px;
+      margin-top: 40px;
     }
+
     .card {
-      background: #fff;
+      background: white;
+      padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 1.5rem;
       width: 280px;
-      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-    .card h3 {
-      color: #ff6c0e;
-      margin-bottom: 0.5rem;
-    }
-    .footer {
-      background: #0e1128;
+
+    footer {
+      background: var(--dark);
       color: white;
-      padding: 2rem;
-      text-align: center;
+      padding: 40px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
     }
+
+    footer .column {
+      margin: 10px;
+    }
+
+    footer a {
+      color: white;
+      display: block;
+      margin: 4px 0;
+      text-decoration: none;
+    }
+
     @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 2.2rem;
+      nav a {
+        margin: 10px 5px;
       }
-      .solar-animation {
-        display: none;
+
+      .grid {
+        flex-direction: column;
+        align-items: center;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="custom-cursor" id="customCursor"></div>
+<header>
+  <div class="logo"><span class="logo-icon"></span> SECURANOTE</div>
+  <nav>
+    <a href="#features">FEATURES</a>
+    <a href="#security">SECURITY</a>
+    <a href="#pricing">PRICING</a>
+    <a href="#about">ABOUT</a>
+    <a href="login.html">LOGIN</a>
+    <a class="btn" href="register.html">GET STARTED</a>
+  </nav>
+</header>
 
-  <header>
-    <div class="logo">SECURANOTE</div>
-    <nav>
-      <a href="#features">Features</a>
-      <a href="#security">Security</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#about">About</a>
-      <a href="login.html">Login</a>
-      <a href="register.html" class="btn btn-primary">Get Started</a>
-    </nav>
-  </header>
+<section class="hero">
+  NEXT-GEN <span class="orange">SECUR</span><span class="green">ITY</span> FOR YOUR DIGITAL ASSETS
+</section>
 
-  <section class="hero">
-    <h1>Secure Your <span>Notes</span> Like Never Before</h1>
-    <p>Military-grade encryption. Simple. Safe. Fast.</p>
-    <div class="solar-animation"></div>
-  </section>
-
-  <section id="features">
-    <h2 class="section-title">Features</h2>
-    <p class="section-subtitle">All the tools you need to stay secure</p>
-    <div class="grid">
-      <div class="card"><h3>Encrypted Notes</h3><p>Protect your notes using AES-256 encryption.</p></div>
-      <div class="card"><h3>Multi-Device Sync</h3><p>Access notes from any device seamlessly.</p></div>
-      <div class="card"><h3>Auto Backup</h3><p>Automatic cloud backup ensures no loss.</p></div>
+<section id="features">
+  <h2>ADVANCED SECURITY FEATURES</h2>
+  <p>Protect your sensitive information with our comprehensive security solutions.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>END-TO-END ENCRYPTION</h3>
+      <p>Your data is encrypted before it leaves your device and can only be decrypted with your unique keys.</p>
     </div>
-  </section>
-
-  <section id="security">
-    <h2 class="section-title">Security</h2>
-    <p class="section-subtitle">Your privacy is our top priority</p>
-    <div class="grid">
-      <div class="card"><h3>End-to-End</h3><p>Only you can see your content, not even us.</p></div>
-      <div class="card"><h3>Biometric</h3><p>Face & fingerprint login supported.</p></div>
-      <div class="card"><h3>Access Logs</h3><p>Track every login to your account.</p></div>
+    <div class="card">
+      <h3>THREE-PIN AUTHENTICATION</h3>
+      <p>An extra layer of security with a three-pin system to access your encrypted data.</p>
     </div>
-  </section>
-
-  <section id="pricing">
-    <h2 class="section-title">Pricing</h2>
-    <p class="section-subtitle">Pick what fits your needs</p>
-    <div class="grid">
-      <div class="card"><h3>Free</h3><p>Basic encryption and sync up to 2 devices.</p></div>
-      <div class="card"><h3>Pro $5/mo</h3><p>Unlimited notes, sync, backup, priority support.</p></div>
-      <div class="card"><h3>Enterprise</h3><p>Custom solution for large teams.</p></div>
+    <div class="card">
+      <h3>S3 SECURE STORAGE</h3>
+      <p>Your encrypted data is stored securely in Amazon S3 with additional protective measures.</p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section id="about">
-    <h2 class="section-title">Meet the Team</h2>
-    <p class="section-subtitle">The faces behind SecuraNote</p>
-    <div class="grid">
-      <div class="card"><h3>Arjun Patel</h3><p>Founder & CEO</p></div>
-      <div class="card"><h3>Sneha Rao</h3><p>CTO</p></div>
-      <div class="card"><h3>Ravi Kumar</h3><p>Security Lead</p></div>
-    </div>
-  </section>
+<section id="security">
+  <h2>HOW SECURANOTE WORKS</h2>
+  <div class="grid">
+    <div class="card"><strong>UPLOAD</strong><p>Upload your notes, images, or videos to our platform.</p></div>
+    <div class="card"><strong>ENCRYPT</strong><p>Your data is encrypted using military-grade algorithms.</p></div>
+    <div class="card"><strong>STORE</strong><p>Data is securely stored in Amazon S3.</p></div>
+    <div class="card"><strong>ACCESS</strong><p>Access your data anytime with three-pin authentication.</p></div>
+  </div>
+</section>
 
-  <footer class="footer">
-    <p>&copy; 2025 SECURANOTE — Secure your thoughts.</p>
-  </footer>
+<section id="pricing">
+  <h2>SECURE ALL YOUR DATA TYPES</h2>
+  <p>Encrypt and secure text notes, photos, and videos with ease.</p>
+  <div class="grid">
+    <div class="card"><h3>ENCRYPTED NOTES</h3><p>Secure your text notes.</p></div>
+    <div class="card"><h3>ENCRYPTED IMAGES</h3><p>Keep your photos safe and encrypted.</p></div>
+    <div class="card"><h3>ENCRYPTED VIDEOS</h3><p>Protect your videos with robust encryption.</p></div>
+  </div>
+</section>
 
-  <script>
-    const cursor = document.getElementById('customCursor');
-    document.addEventListener('mousemove', e => {
-      cursor.style.top = e.clientY + 'px';
-      cursor.style.left = e.clientX + 'px';
-    });
-  </script>
+<section id="about">
+  <h2>SECURITY THAT NEVER SLEEPS</h2>
+  <div class="grid">
+    <div class="card"><strong>REAL-TIME MONITORING</strong><p>Our systems monitor continuously for threats.</p></div>
+    <div class="card"><strong>AUTOMATIC UPDATES</strong><p>We update your system with the latest patches automatically.</p></div>
+    <div class="card"><strong>REDUNDANT BACKUPS</strong><p>Multiple backups ensure your data is never lost.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>READY TO SECURE YOUR DATA?</h2>
+  <p>Join thousands who trust SecuraNote for encryption needs.</p>
+  <a class="btn" href="register.html">GET STARTED NOW</a>
+  <a class="btn" style="background: var(--accent); margin-left: 10px;" href="#pricing">VIEW PLANS</a>
+</section>
+
+<footer>
+  <div class="column">
+    <strong>SECURANOTE</strong>
+    <p>Military-grade encryption technology to protect your data.</p>
+  </div>
+  <div class="column">
+    <strong>QUICK LINKS</strong>
+    <a href="#">Home</a>
+    <a href="#features">Features</a>
+    <a href="#security">Security</a>
+    <a href="#pricing">Pricing</a>
+  </div>
+  <div class="column">
+    <strong>RESOURCES</strong>
+    <a href="#">Documentation</a>
+    <a href="#">API</a>
+    <a href="#">Support</a>
+    <a href="#">Blog</a>
+  </div>
+  <div class="column">
+    <strong>CONTACT</strong>
+    <p>info@securanote.com</p>
+    <p>+1 (555) 123-4567</p>
+    <p>123 Security Ave, Cryptoville</p>
+  </div>
+</footer>
 
 </body>
 </html>
