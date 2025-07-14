@@ -10,7 +10,7 @@
       --primary: #ff6b00;
       --dark: #0f1629;
       --accent: #00b67a;
-      --blue: #1145e6;
+      --blue: #0e2a7c; /* darkened from #1145e6 */
     }
 
     * {
@@ -92,12 +92,13 @@
     .hero span.orange {
       color: #f28e1c;
     }
+
     .hero span.green {
       color: #4caf50;
     }
 
     .section-blue {
-      background: var(--blue);
+      background: var(--blue); /* darker background */
       color: white;
       padding: 80px 40px;
       text-align: center;
@@ -108,7 +109,7 @@
       margin-bottom: 20px;
     }
 
-    .features-grid, .data-types-grid, .how-works-grid, .never-sleeps-grid {
+    .features-grid {
       display: flex;
       justify-content: center;
       gap: 40px;
@@ -116,7 +117,7 @@
       flex-wrap: wrap;
     }
 
-    .feature-box, .data-box, .how-box, .sleep-box {
+    .feature-box {
       background: #1543a0;
       padding: 20px;
       border-radius: 8px;
@@ -125,47 +126,19 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    .section-light {
-      padding: 80px 40px;
-      text-align: center;
-      background: #f8f9fb;
-    }
-
-    .section-light h2 {
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
-
-    footer {
-      background: var(--dark);
-      color: white;
-      padding: 40px;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-
-    .footer-col h3 {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .footer-col p, .footer-col a {
-      font-size: 14px;
-      color: #ccc;
-      text-decoration: none;
-      display: block;
-      margin-bottom: 5px;
-    }
-
     @media (max-width: 768px) {
-      .features-grid, .data-types-grid, .how-works-grid, .never-sleeps-grid {
+      .features-grid {
         flex-direction: column;
         align-items: center;
       }
+
       .hero h1 {
         font-size: 36px;
       }
+    }
+
+    section {
+      scroll-margin-top: 80px;
     }
   </style>
 </head>
@@ -181,9 +154,8 @@
     <a href="#security">SECURITY</a>
     <a href="#pricing">PRICING</a>
     <a href="#about">ABOUT</a>
-    <a href="login.html">LOGIN</a>
-    <a class="btn" href="register.html">GET STARTED</a>
-
+    <a href="/login">LOGIN</a>
+    <a class="btn" href="/register">GET STARTED</a>
   </nav>
 </header>
 
@@ -210,100 +182,20 @@
   </div>
 </section>
 
-<section class="section-light" id="security">
-  <h2>Secure All Your Data Types</h2>
-  <p>One platform to encrypt and secure all your sensitive information.</p>
-  <div class="data-types-grid">
-    <div class="data-box">
-      <h3>Encrypted Notes</h3>
-      <p>Securely store your sensitive text notes with our advanced encryption technology.</p>
-    </div>
-    <div class="data-box">
-      <h3>Encrypted Images</h3>
-      <p>Keep your private photos and images safe with end-to-end encryption.</p>
-    </div>
-    <div class="data-box">
-      <h3>Encrypted Videos</h3>
-      <p>Protect your confidential videos with our secure encryption technology.</p>
-    </div>
-  </div>
+<section class="section-blue" id="security">
+  <h2>Military-Grade Protocols</h2>
+  <p>We implement AES-256, RSA-4096, and Chacha20 encryption algorithms to ensure maximum protection of your sensitive data.</p>
 </section>
 
-<section class="section-light">
-  <h2>How SecuraNote Works</h2>
-  <p>Simple, secure, and straightforward process to protect your data.</p>
-  <div class="how-works-grid">
-    <div class="how-box">
-      <h3>Upload</h3>
-      <p>Upload your notes, images, or videos to the SecuraNote platform.</p>
-    </div>
-    <div class="how-box">
-      <h3>Encrypt</h3>
-      <p>Your data is encrypted with military-grade encryption algorithms.</p>
-    </div>
-    <div class="how-box">
-      <h3>Store</h3>
-      <p>Encrypted data is securely stored in Amazon S3 storage.</p>
-    </div>
-    <div class="how-box">
-      <h3>Access</h3>
-      <p>Access your data anytime with your three-pin authentication.</p>
-    </div>
-  </div>
+<section class="section-blue" id="pricing">
+  <h2>Simple, Transparent Pricing</h2>
+  <p>Choose the plan that fits your needs. Free tier available. Upgrade anytime.</p>
 </section>
 
-<section class="section-light">
-  <h2>Security That Never Sleeps</h2>
-  <p>Our advanced security protocols work around the clock to ensure your data remains protected at all times.</p>
-  <div class="never-sleeps-grid">
-    <div class="sleep-box">
-      <h3>Real-Time Threat Monitoring</h3>
-      <p>Our systems continuously monitor for potential security threats and vulnerabilities.</p>
-    </div>
-    <div class="sleep-box">
-      <h3>Automatic Security Updates</h3>
-      <p>We implement the latest security patches and updates automatically to keep your data safe.</p>
-    </div>
-    <div class="sleep-box">
-      <h3>Redundant Backup Systems</h3>
-      <p>Multiple backup systems ensure your encrypted data is never lost or compromised.</p>
-    </div>
-  </div>
+<section class="section-blue" id="about">
+  <h2>About SecuraNote</h2>
+  <p>We are a privacy-first note-taking platform built for students, journalists, researchers, and professionals who care about digital freedom.</p>
 </section>
-
-<section class="section-light">
-  <h2>Ready to Secure Your Data?</h2>
-  <p>Join thousands of users who trust SecuraNote for their data encryption needs.</p>
-  <a class="btn" href="register.html">GET STARTED NOW</a>
-  <a class="btn" href="#pricing" style="background: var(--accent); margin-left: 20px;">VIEW PLANS</a>
-</section>
-
-<footer>
-  <div class="footer-col">
-    <h3>SECURANOTE</h3>
-    <p>Secure your data with military-grade encryption technology.</p>
-  </div>
-  <div class="footer-col">
-    <h3>Quick Links</h3>
-    <a href="#">Home</a>
-    <a href="#features">Features</a>
-    <a href="#security">Security</a>
-    <a href="#pricing">Pricing</a>
-  </div>
-  <div class="footer-col">
-    <h3>Resources</h3>
-    <a href="#">Documentation</a>
-    <a href="#">API</a>
-    <a href="#">Support</a>
-    <a href="#">Blog</a>
-  </div>
-  <div class="footer-col">
-    <h3>Contact</h3>
-    <p>info@securanote.com</p>
-    <p>+1 (555) 123-4567</p>
-    <p>123 Security Ave, Cryptoville</p>
-  </div>
-</footer>
 
 </body>
 </html>
