@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Securanote</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #ff6b00;
       --dark: #0f1629;
       --accent: #00b67a;
-      --highlight: #6dd47e;
-      --gradient-orange: linear-gradient(to right, #f28e1c, #e57f1e);
-      --gradient-green: linear-gradient(to right, #85c240, #4caf50);
+      --blue: #1145e6;
     }
 
     * {
@@ -19,96 +18,122 @@
       padding: 0;
       box-sizing: border-box;
       scroll-behavior: smooth;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Montserrat', sans-serif;
     }
 
     body {
-      background: #f8f9fc;
+      background-color: white;
       color: var(--dark);
     }
 
     header {
-      background: white;
-      padding: 20px 40px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
       position: sticky;
       top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      z-index: 999;
     }
 
     .logo {
-      font-size: 24px;
-      font-weight: bold;
       display: flex;
       align-items: center;
+      font-weight: bold;
+      font-size: 20px;
     }
 
     .logo-icon {
-      width: 25px;
-      height: 25px;
       background: var(--primary);
-      border-radius: 5px;
-      display: inline-block;
+      border-radius: 4px;
+      width: 30px;
+      height: 30px;
       margin-right: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 18px;
     }
 
     nav a {
+      margin: 0 12px;
       text-decoration: none;
-      margin: 0 15px;
       color: var(--dark);
       font-weight: 500;
     }
 
     .btn {
-      padding: 10px 20px;
       background: var(--primary);
       color: white;
-      font-weight: bold;
+      padding: 10px 18px;
       text-decoration: none;
       border-radius: 4px;
+      font-weight: bold;
     }
 
-    section {
+    .hero {
+      background: radial-gradient(circle, #fff, #eef3f8);
+      text-align: left;
+      padding: 100px 60px;
+      background-image: radial-gradient(#000 1px, transparent 0);
+      background-size: 20px 20px;
+    }
+
+    .hero h1 {
+      font-size: 52px;
+      font-weight: bold;
+      line-height: 1.2;
+      max-width: 700px;
+    }
+
+    .hero span.orange {
+      color: #f28e1c;
+    }
+    .hero span.green {
+      color: #4caf50;
+    }
+
+    .section-blue {
+      background: var(--blue);
+      color: white;
       padding: 80px 40px;
       text-align: center;
     }
 
-    .hero {
-      background: #fff;
-      font-size: 40px;
-      font-weight: bold;
-      padding: 120px 20px 100px;
+    .section-blue h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
     }
 
-    .hero span.orange {
-      background: var(--gradient-orange);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .hero span.green {
-      background: var(--gradient-green);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .grid {
+    .features-grid, .data-types-grid, .how-works-grid, .never-sleeps-grid {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
       gap: 40px;
       margin-top: 40px;
+      flex-wrap: wrap;
     }
 
-    .card {
-      background: white;
+    .feature-box, .data-box, .how-box, .sleep-box {
+      background: #1543a0;
       padding: 20px;
       border-radius: 8px;
-      width: 280px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      width: 260px;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .section-light {
+      padding: 80px 40px;
+      text-align: center;
+      background: #f8f9fb;
+    }
+
+    .section-light h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
     }
 
     footer {
@@ -116,29 +141,30 @@
       color: white;
       padding: 40px;
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
+      flex-wrap: wrap;
     }
 
-    footer .column {
-      margin: 10px;
+    .footer-col h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
     }
 
-    footer a {
-      color: white;
-      display: block;
-      margin: 4px 0;
+    .footer-col p, .footer-col a {
+      font-size: 14px;
+      color: #ccc;
       text-decoration: none;
+      display: block;
+      margin-bottom: 5px;
     }
 
     @media (max-width: 768px) {
-      nav a {
-        margin: 10px 5px;
-      }
-
-      .grid {
+      .features-grid, .data-types-grid, .how-works-grid, .never-sleeps-grid {
         flex-direction: column;
         align-items: center;
+      }
+      .hero h1 {
+        font-size: 36px;
       }
     }
   </style>
@@ -146,7 +172,10 @@
 <body>
 
 <header>
-  <div class="logo"><span class="logo-icon"></span> SECURANOTE</div>
+  <div class="logo">
+    <div class="logo-icon">🔒</div>
+    SECURANOTE
+  </div>
   <nav>
     <a href="#features">FEATURES</a>
     <a href="#security">SECURITY</a>
@@ -158,85 +187,117 @@
 </header>
 
 <section class="hero">
-  NEXT-GEN <span class="orange">SECUR</span><span class="green">ITY</span> FOR YOUR DIGITAL ASSETS
+  <h1>NEXT-GEN <span class="orange">SECUR</span><span class="green">ITY</span> FOR YOUR DIGITAL ASSETS</h1>
 </section>
 
-<section id="features">
-  <h2>ADVANCED SECURITY FEATURES</h2>
-  <p>Protect your sensitive information with our comprehensive security solutions.</p>
-  <div class="grid">
-    <div class="card">
+<section class="section-blue" id="features">
+  <h2>Enterprise-Level Encryption for Everyone</h2>
+  <p>SecuraNote offers multi-algorithm encryption, secure cloud storage, and ephemeral data sharing in one intuitive platform.</p>
+  <div class="features-grid">
+    <div class="feature-box">
       <h3>END-TO-END ENCRYPTION</h3>
       <p>Your data is encrypted before it leaves your device and can only be decrypted with your unique keys.</p>
     </div>
-    <div class="card">
+    <div class="feature-box">
       <h3>THREE-PIN AUTHENTICATION</h3>
-      <p>An extra layer of security with a three-pin system to access your encrypted data.</p>
+      <p>Additional security using a 3-pin verification system to unlock access.</p>
     </div>
-    <div class="card">
+    <div class="feature-box">
       <h3>S3 SECURE STORAGE</h3>
-      <p>Your encrypted data is stored securely in Amazon S3 with additional protective measures.</p>
+      <p>Your encrypted data is stored in Amazon S3 with additional protective measures.</p>
     </div>
   </div>
 </section>
 
-<section id="security">
-  <h2>HOW SECURANOTE WORKS</h2>
-  <div class="grid">
-    <div class="card"><strong>UPLOAD</strong><p>Upload your notes, images, or videos to our platform.</p></div>
-    <div class="card"><strong>ENCRYPT</strong><p>Your data is encrypted using military-grade algorithms.</p></div>
-    <div class="card"><strong>STORE</strong><p>Data is securely stored in Amazon S3.</p></div>
-    <div class="card"><strong>ACCESS</strong><p>Access your data anytime with three-pin authentication.</p></div>
+<section class="section-light" id="security">
+  <h2>Secure All Your Data Types</h2>
+  <p>One platform to encrypt and secure all your sensitive information.</p>
+  <div class="data-types-grid">
+    <div class="data-box">
+      <h3>Encrypted Notes</h3>
+      <p>Securely store your sensitive text notes with our advanced encryption technology.</p>
+    </div>
+    <div class="data-box">
+      <h3>Encrypted Images</h3>
+      <p>Keep your private photos and images safe with end-to-end encryption.</p>
+    </div>
+    <div class="data-box">
+      <h3>Encrypted Videos</h3>
+      <p>Protect your confidential videos with our secure encryption technology.</p>
+    </div>
   </div>
 </section>
 
-<section id="pricing">
-  <h2>SECURE ALL YOUR DATA TYPES</h2>
-  <p>Encrypt and secure text notes, photos, and videos with ease.</p>
-  <div class="grid">
-    <div class="card"><h3>ENCRYPTED NOTES</h3><p>Secure your text notes.</p></div>
-    <div class="card"><h3>ENCRYPTED IMAGES</h3><p>Keep your photos safe and encrypted.</p></div>
-    <div class="card"><h3>ENCRYPTED VIDEOS</h3><p>Protect your videos with robust encryption.</p></div>
+<section class="section-light">
+  <h2>How SecuraNote Works</h2>
+  <p>Simple, secure, and straightforward process to protect your data.</p>
+  <div class="how-works-grid">
+    <div class="how-box">
+      <h3>Upload</h3>
+      <p>Upload your notes, images, or videos to the SecuraNote platform.</p>
+    </div>
+    <div class="how-box">
+      <h3>Encrypt</h3>
+      <p>Your data is encrypted with military-grade encryption algorithms.</p>
+    </div>
+    <div class="how-box">
+      <h3>Store</h3>
+      <p>Encrypted data is securely stored in Amazon S3 storage.</p>
+    </div>
+    <div class="how-box">
+      <h3>Access</h3>
+      <p>Access your data anytime with your three-pin authentication.</p>
+    </div>
   </div>
 </section>
 
-<section id="about">
-  <h2>SECURITY THAT NEVER SLEEPS</h2>
-  <div class="grid">
-    <div class="card"><strong>REAL-TIME MONITORING</strong><p>Our systems monitor continuously for threats.</p></div>
-    <div class="card"><strong>AUTOMATIC UPDATES</strong><p>We update your system with the latest patches automatically.</p></div>
-    <div class="card"><strong>REDUNDANT BACKUPS</strong><p>Multiple backups ensure your data is never lost.</p></div>
+<section class="section-light">
+  <h2>Security That Never Sleeps</h2>
+  <p>Our advanced security protocols work around the clock to ensure your data remains protected at all times.</p>
+  <div class="never-sleeps-grid">
+    <div class="sleep-box">
+      <h3>Real-Time Threat Monitoring</h3>
+      <p>Our systems continuously monitor for potential security threats and vulnerabilities.</p>
+    </div>
+    <div class="sleep-box">
+      <h3>Automatic Security Updates</h3>
+      <p>We implement the latest security patches and updates automatically to keep your data safe.</p>
+    </div>
+    <div class="sleep-box">
+      <h3>Redundant Backup Systems</h3>
+      <p>Multiple backup systems ensure your encrypted data is never lost or compromised.</p>
+    </div>
   </div>
 </section>
 
-<section>
-  <h2>READY TO SECURE YOUR DATA?</h2>
-  <p>Join thousands who trust SecuraNote for encryption needs.</p>
+<section class="section-light">
+  <h2>Ready to Secure Your Data?</h2>
+  <p>Join thousands of users who trust SecuraNote for their data encryption needs.</p>
   <a class="btn" href="register.html">GET STARTED NOW</a>
-  <a class="btn" style="background: var(--accent); margin-left: 10px;" href="#pricing">VIEW PLANS</a>
+  <a class="btn" href="#pricing" style="background: var(--accent); margin-left: 20px;">VIEW PLANS</a>
 </section>
 
 <footer>
-  <div class="column">
-    <strong>SECURANOTE</strong>
-    <p>Military-grade encryption technology to protect your data.</p>
+  <div class="footer-col">
+    <h3>SECURANOTE</h3>
+    <p>Secure your data with military-grade encryption technology.</p>
   </div>
-  <div class="column">
-    <strong>QUICK LINKS</strong>
+  <div class="footer-col">
+    <h3>Quick Links</h3>
     <a href="#">Home</a>
     <a href="#features">Features</a>
     <a href="#security">Security</a>
     <a href="#pricing">Pricing</a>
   </div>
-  <div class="column">
-    <strong>RESOURCES</strong>
+  <div class="footer-col">
+    <h3>Resources</h3>
     <a href="#">Documentation</a>
     <a href="#">API</a>
     <a href="#">Support</a>
     <a href="#">Blog</a>
   </div>
-  <div class="column">
-    <strong>CONTACT</strong>
+  <div class="footer-col">
+    <h3>Contact</h3>
     <p>info@securanote.com</p>
     <p>+1 (555) 123-4567</p>
     <p>123 Security Ave, Cryptoville</p>
