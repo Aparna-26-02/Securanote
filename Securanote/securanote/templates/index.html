@@ -1,201 +1,644 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Securanote</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #ff6b00;
-      --dark: #0f1629;
-      --accent: #00b67a;
-      --blue: #0e2a7c; /* darkened from #1145e6 */
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      scroll-behavior: smooth;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    body {
-      background-color: white;
-      color: var(--dark);
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 40px;
-      background: white;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      position: sticky;
-      top: 0;
-      z-index: 999;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-      font-size: 20px;
-    }
-
-    .logo-icon {
-      background: var(--primary);
-      border-radius: 4px;
-      width: 30px;
-      height: 30px;
-      margin-right: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-size: 18px;
-    }
-
-    nav a {
-      margin: 0 12px;
-      text-decoration: none;
-      color: var(--dark);
-      font-weight: 500;
-    }
-
-    .btn {
-      background: var(--primary);
-      color: white;
-      padding: 10px 18px;
-      text-decoration: none;
-      border-radius: 4px;
-      font-weight: bold;
-    }
-
-    .hero {
-      background: radial-gradient(circle, #fff, #eef3f8);
-      text-align: left;
-      padding: 100px 60px;
-      background-image: radial-gradient(#000 1px, transparent 0);
-      background-size: 20px 20px;
-    }
-
-    .hero h1 {
-      font-size: 52px;
-      font-weight: bold;
-      line-height: 1.2;
-      max-width: 700px;
-    }
-
-    .hero span.orange {
-      color: #f28e1c;
-    }
-
-    .hero span.green {
-      color: #4caf50;
-    }
-
-    .section-blue {
-      background: var(--blue); /* darker background */
-      color: white;
-      padding: 80px 40px;
-      text-align: center;
-    }
-
-    .section-blue h2 {
-      font-size: 32px;
-      margin-bottom: 20px;
-    }
-
-    .features-grid {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-top: 40px;
-      flex-wrap: wrap;
-    }
-
-    .feature-box {
-      background: #1543a0;
-      padding: 20px;
-      border-radius: 8px;
-      width: 260px;
-      color: white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
-    @media (max-width: 768px) {
-      .features-grid {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .hero h1 {
-        font-size: 36px;
-      }
-    }
-
-    section {
-      scroll-margin-top: 80px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecuraNote - Next-Gen Security for Your Digital Assets</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #3498db;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .btn-outline {
+            border: 1px solid #3498db;
+            color: #3498db;
+            background: transparent;
+        }
+        
+        .btn-outline:hover {
+            background: #3498db;
+            color: #fff;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: #fff;
+            border: 1px solid #3498db;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            margin-top: 80px;
+        }
+        
+        .hero-content {
+            max-width: 600px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            color: #2c3e50;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #7f8c8d;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        section {
+            padding: 5rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        
+        .feature-card p {
+            color: #7f8c8d;
+        }
+        
+        .how-it-works {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .step {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .step h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        
+        .security-features {
+            background: #2c3e50;
+            color: #fff;
+        }
+        
+        .security-features .section-title h2 {
+            color: #fff;
+        }
+        
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .security-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 2rem;
+            transition: transform 0.3s;
+        }
+        
+        .security-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .security-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta {
+            text-align: center;
+            padding: 5rem;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: #fff;
+            border-radius: 10px;
+            margin: 5rem auto;
+        }
+        
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        footer {
+            background: #2c3e50;
+            color: #fff;
+            padding: 3rem 5%;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-column ul li a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: #3498db;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Animations */
+        .animate-fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .animate-slide-up {
+            animation: slideUp 1s ease-in-out;
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+        
+        .code-block .checkmark {
+            color: #2ecc71;
+            margin-left: 1rem;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .stat-item h3 {
+            font-size: 2rem;
+            color: #3498db;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-item p {
+            color: #7f8c8d;
+        }
+        
+        .data-types {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .data-type {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .data-type:hover {
+            transform: translateY(-10px);
+        }
+        
+        .data-type h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        
+        .data-type-btn {
+            margin-top: 1.5rem;
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <nav>
+            <div class="logo animate__animated animate__fadeIn">SECURANOTE</div>
+            <div class="nav-links">
+                <a href="#features" class="animate__animated animate__fadeIn" style="animation-delay: 0.1s;">FEATURES</a>
+                <a href="#security" class="animate__animated animate__fadeIn" style="animation-delay: 0.2s;">SECURITY</a>
+                <a href="#pricing" class="animate__animated animate__fadeIn" style="animation-delay: 0.3s;">PRICING</a>
+                <a href="#about" class="animate__animated animate__fadeIn" style="animation-delay: 0.4s;">ABOUT</a>
+            </div>
+            <div class="nav-buttons">
+                <a href="login.html" class="btn btn-outline animate__animated animate__fadeIn" style="animation-delay: 0.5s;">LOGIN</a>
+                <a href="register.html" class="btn btn-primary animate__animated animate__fadeIn" style="animation-delay: 0.6s;">GET STARTED</a>
+            </div>
+        </nav>
+    </header>
 
-<header>
-  <div class="logo">
-    <div class="logo-icon">🔒</div>
-    SECURANOTE
-  </div>
-  <nav>
-    <a href="#features">FEATURES</a>
-    <a href="#security">SECURITY</a>
-    <a href="#pricing">PRICING</a>
-    <a href="#about">ABOUT</a>
-    <a href="/login">LOGIN</a>
-    <a class="btn" href="/register">GET STARTED</a>
-  </nav>
-</header>
+    <section class="hero">
+        <div class="hero-content animate__animated animate__fadeInLeft">
+            <h1>NEXT-GEN SECURITY FOR YOUR DIGITAL ASSETS</h1>
+            <p>Military-grade encryption for your notes, images, and videos with three-pin authentication and secure S3 storage.</p>
+            <div class="hero-buttons">
+                <a href="register.html" class="btn btn-primary">START ENCRYPTING</a>
+                <a href="#features" class="btn btn-outline">LEARN MORE</a>
+            </div>
+        </div>
+        <div class="hero-image animate__animated animate__fadeInRight">
+            <!-- Hero image would go here -->
+        </div>
+    </section>
 
-<section class="hero">
-  <h1>NEXT-GEN <span class="orange">SECUR</span><span class="green">ITY</span> FOR YOUR DIGITAL ASSETS</h1>
-</section>
+    <section id="features" class="animate__animated animate__fadeIn" style="animation-delay: 0.7s;">
+        <div class="section-title">
+            <h2>SECURE ALL YOUR DATA TYPES</h2>
+            <p>One platform to encrypt and secure all your sensitive information.</p>
+        </div>
+        <div class="data-types">
+            <div class="data-type">
+                <h3>ENCRYPTED NOTES</h3>
+                <p>Securely store your sensitive text notes with our advanced encryption technology.</p>
+                <a href="#" class="btn btn-outline data-type-btn">ENCRYPT NOTES</a>
+            </div>
+            <div class="data-type">
+                <h3>ENCRYPTED IMAGES</h3>
+                <p>Keep your private photos and images safe with end-to-end encryption.</p>
+                <a href="#" class="btn btn-outline data-type-btn">ENCRYPT IMAGES</a>
+            </div>
+            <div class="data-type">
+                <h3>ENCRYPTED VIDEOS</h3>
+                <p>Protect your confidential videos with our secure encryption technology.</p>
+                <a href="#" class="btn btn-outline data-type-btn">ENCRYPT VIDEOS</a>
+            </div>
+        </div>
+    </section>
 
-<section class="section-blue" id="features">
-  <h2>Enterprise-Level Encryption for Everyone</h2>
-  <p>SecuraNote offers multi-algorithm encryption, secure cloud storage, and ephemeral data sharing in one intuitive platform.</p>
-  <div class="features-grid">
-    <div class="feature-box">
-      <h3>END-TO-END ENCRYPTION</h3>
-      <p>Your data is encrypted before it leaves your device and can only be decrypted with your unique keys.</p>
-    </div>
-    <div class="feature-box">
-      <h3>THREE-PIN AUTHENTICATION</h3>
-      <p>Additional security using a 3-pin verification system to unlock access.</p>
-    </div>
-    <div class="feature-box">
-      <h3>S3 SECURE STORAGE</h3>
-      <p>Your encrypted data is stored in Amazon S3 with additional protective measures.</p>
-    </div>
-  </div>
-</section>
+    <section class="how-it-works animate__animated animate__fadeIn" style="animation-delay: 0.8s;">
+        <div class="section-title">
+            <h2>HOW SECURANOTE WORKS</h2>
+            <p>Simple, secure, and straightforward process to protect your data.</p>
+        </div>
+        <div class="steps">
+            <div class="step">
+                <h3>UPLOAD</h3>
+                <p>Upload your notes, images, or videos to the SecuraNote platform.</p>
+            </div>
+            <div class="step">
+                <h3>ENCRYPT</h3>
+                <p>Your data is encrypted with military-grade encryption algorithms.</p>
+            </div>
+            <div class="step">
+                <h3>STORE</h3>
+                <p>Encrypted data is securely stored in Amazon S3 storage.</p>
+            </div>
+            <div class="step">
+                <h3>ACCESS</h3>
+                <p>Access your data anytime with your three-pin authentication.</p>
+            </div>
+        </div>
+    </section>
 
-<section class="section-blue" id="security">
-  <h2>Military-Grade Protocols</h2>
-  <p>We implement AES-256, RSA-4096, and Chacha20 encryption algorithms to ensure maximum protection of your sensitive data.</p>
-</section>
+    <section id="security" class="security-features animate__animated animate__fadeIn" style="animation-delay: 0.9s;">
+        <div class="section-title">
+            <h2>ADVANCED SECURITY FEATURES</h2>
+            <p>Protect your sensitive information with our comprehensive security solutions.</p>
+        </div>
+        <div class="security-grid">
+            <div class="security-card">
+                <h3>END-TO-END ENCRYPTION</h3>
+                <p>Your data is encrypted before it leaves your device and can only be decrypted with your unique keys.</p>
+            </div>
+            <div class="security-card">
+                <h3>THREE-PIN AUTHENTICATION</h3>
+                <p>An additional layer of security with a three-pin authentication system to access your encrypted data.</p>
+            </div>
+            <div class="security-card">
+                <h3>S3 SECURE STORAGE</h3>
+                <p>Your encrypted data is stored in Amazon S3 with additional security measures to ensure maximum protection.</p>
+            </div>
+        </div>
+    </section>
 
-<section class="section-blue" id="pricing">
-  <h2>Simple, Transparent Pricing</h2>
-  <p>Choose the plan that fits your needs. Free tier available. Upgrade anytime.</p>
-</section>
+    <section class="animate__animated animate__fadeIn" style="animation-delay: 1s;">
+        <div class="section-title">
+            <h2>Enterprise-Level Encryption for Everyone</h2>
+            <p>Your data deserves the best protection</p>
+        </div>
+        <div class="code-block">
+            <p>Encrypting with ASL-SAS...</p>
+            <pre>const succeeds = await encrypt(userData, {<br>    algorithm: 'ASL-SAS',<br>    logSize: 256<br>});</pre>
+            <p>✓ Data secured and stored in Cloud <span class="checkmark">✓</span></p>
+        </div>
+        <div class="stats">
+            <div class="stat-item">
+                <h3>10,000+</h3>
+                <p>Users Trust Us</p>
+            </div>
+            <div class="stat-item">
+                <h3>256-bit</h3>
+                <p>Encryption</p>
+            </div>
+            <div class="stat-item">
+                <h3>99.99%</h3>
+                <p>Uptime</p>
+            </div>
+            <div class="stat-item">
+                <h3>Global</h3>
+                <p>Cloud Infrastructure</p>
+            </div>
+        </div>
+    </section>
 
-<section class="section-blue" id="about">
-  <h2>About SecuraNote</h2>
-  <p>We are a privacy-first note-taking platform built for students, journalists, researchers, and professionals who care about digital freedom.</p>
-</section>
+    <section class="security-section animate__animated animate__fadeIn" style="animation-delay: 1.1s;">
+        <div class="section-title">
+            <h2>SECURITY THAT NEVER SLEEPS</h2>
+            <p>Our advanced security protocols work around the clock to ensure your data remains protected at all times.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>REAL-TIME THREAT MONITORING</h3>
+                <p>Our systems continuously monitor for potential security threats and vulnerabilities.</p>
+            </div>
+            <div class="feature-card">
+                <h3>AUTOMATIC SECURITY UPDATES</h3>
+                <p>We implement the latest security patches and updates automatically to keep your data safe.</p>
+            </div>
+            <div class="feature-card">
+                <h3>REDUNDANT BACKUP SYSTEMS</h3>
+                <p>Multiple backup systems ensure your encrypted data is never lost or compromised.</p>
+            </div>
+        </div>
+    </section>
 
+    <section class="cta animate__animated animate__fadeIn" style="animation-delay: 1.2s;">
+        <h2>READY TO SECURE YOUR DATA?</h2>
+        <p>Join thousands of users who trust SecuraNote for their data encryption needs.</p>
+        <div class="cta-buttons">
+            <a href="register.html" class="btn btn-primary">GET STARTED NOW</a>
+            <a href="#pricing" class="btn btn-outline" style="color: #fff; border-color: #fff;">VIEW PLANS</a>
+        </div>
+    </section>
+
+    <footer class="animate__animated animate__fadeIn" style="animation-delay: 1.3s;">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>QUICK LINKS</h3>
+                <ul>
+                    <li><a href="#">HOME</a></li>
+                    <li><a href="#features">FEATURES</a></li>
+                    <li><a href="#security">SECURITY</a></li>
+                    <li><a href="#pricing">PRICING</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>RESOURCES</h3>
+                <ul>
+                    <li><a href="#">DOCUMENTATION</a></li>
+                    <li><a href="#">API</a></li>
+                    <li><a href="#">SUPPORT</a></li>
+                    <li><a href="#">BLOG</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>CONTACT</h3>
+                <ul>
+                    <li><a href="mailto:info@securanote.com">INFO@SECURANOTE.COM</a></li>
+                    <li><a href="tel:+15551234567">+1 (555) 123-4567</a></li>
+                    <li>123 SECURITY AVE, CRYPTOVILLE</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 SecuraNote. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                if (targetId === '#features') {
+                    document.querySelector(targetId).scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                } else {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Animation on scroll
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.animate__animated');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementPosition < windowHeight - 100) {
+                    const animationClass = element.classList[1];
+                    element.classList.add(animationClass);
+                }
+            });
+        };
+
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+    </script>
 </body>
 </html>
