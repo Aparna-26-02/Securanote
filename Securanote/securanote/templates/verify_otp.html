@@ -1,28 +1,171 @@
-<form method="POST">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verify OTP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-    <p>Enter OTP:</p>
-    <input type="text" name="otp" required>
-    <p><input type="submit" value="Verify OTP"></p>
-</form>
+    body {
+      margin: 0;
+      font-family: 'Space Grotesk', sans-serif;
+      background: linear-gradient(135deg, #6C63FF, #A084E8);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-<!-- Resend OTP form -->
-<form method="POST" action="{{ url_for('auth.resend_otp') }}">
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.5s ease-in-out;
+    }
 
-    <button id="resend-btn" type="submit" disabled>Resend OTP (wait...)</button>
-</form>
+    .container h2 {
+      margin-top: 1rem;
+      font-size: 1.5rem;
+    }
 
-<script>
+    .container p {
+      color: #555;
+      font-size: 0.95rem;
+    }
+
+    .container p a {
+      color: #6C63FF;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .otp-inputs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 1.5rem 0;
+    }
+
+    .otp-inputs input[type="text"] {
+      width: 45px;
+      height: 55px;
+      font-size: 1.5rem;
+      text-align: center;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      transition: 0.2s ease;
+      outline: none;
+    }
+
+    .otp-inputs input:focus {
+      border-color: #6C63FF;
+      box-shadow: 0 0 5px #b6b0fa;
+    }
+
+    .verify-btn {
+      background-color: #5a4bff;
+      color: white;
+      padding: 14px;
+      width: 100%;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .verify-btn:hover {
+      background-color: #4b3dd9;
+    }
+
+    .resend-section {
+      margin-top: 1.2rem;
+      font-size: 0.9rem;
+    }
+
+    .resend-section a,
+    #resend-btn {
+      color: #6C63FF;
+      font-weight: 500;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    #resend-btn:disabled {
+      color: #aaa;
+      cursor: not-allowed;
+    }
+
+    .timer {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div style="font-size: 2.5rem; color: #6C63FF;">✔️</div>
+    <h2>Verify Your Email</h2>
+    <p>We've sent a verification code to<br><strong style="color:#6C63FF">user@example.com</strong></p>
+
+    <form method="POST">
+      <p>Enter verification code</p>
+      <div class="otp-inputs">
+        <!-- We keep it simple: one input field, but style it like 6 boxes -->
+        <input type="text" name="otp" maxlength="6" pattern="\d*" required />
+      </div>
+      <p><input type="submit" value="Verify OTP" class="verify-btn"></p>
+    </form>
+
+    <!-- Resend OTP form -->
+    <form method="POST" action="{{ url_for('auth.resend_otp') }}">
+      <div class="resend-section">
+        <span>Didn't receive the code?</span>
+        <button id="resend-btn" type="submit" disabled>Resend OTP</button>
+        <div class="timer">Resend available in <span id="countdown">00:10</span></div>
+      </div>
+    </form>
+  </div>
+
+  <script>
     const resendBtn = document.getElementById('resend-btn');
+    const countdownText = document.getElementById('countdown');
     let countdown = 10;
 
     const interval = setInterval(() => {
-        if (countdown > 0) {
-            resendBtn.textContent = `Resend OTP (${countdown}s)`;
-            countdown--;
-        } else {
-            clearInterval(interval);
-            resendBtn.disabled = false;
-            resendBtn.textContent = "Resend OTP";
-        }
+      if (countdown > 0) {
+        countdownText.textContent = `00:${countdown < 10 ? '0' : ''}${countdown}`;
+        resendBtn.textContent = "Resend OTP";
+        countdown--;
+      } else {
+        clearInterval(interval);
+        resendBtn.disabled = false;
+        countdownText.textContent = "";
+        resendBtn.textContent = "Resend OTP";
+      }
     }, 1000);
-</script>
+  </script>
+</body>
+</html>
