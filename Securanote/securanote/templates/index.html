@@ -25,6 +25,38 @@
     .btn-login:hover { background:#f0f0f0; }
     .btn-primary { background:#ff6b35;color:white;border:none;padding:.75rem 1.5rem;border-radius:5px;font-weight:bold;transition:.3s; }
     .btn-primary:hover { background:#e55a2b;transform:translateY(-2px);box-shadow:0 5px 15px rgba(255,107,53,0.4); }
+    .nav-buttons a {
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  font-weight: 600;
+  transition: 0.3s ease;
+  margin-left: 1rem;
+  display: inline-block;
+}
+
+.nav-buttons a:first-child {
+  border: 2px solid #ff6b35;
+  color: #ff6b35;
+  background: transparent;
+}
+
+.nav-buttons a:first-child:hover {
+  background: #ff6b35;
+  color: white;
+}
+
+.nav-buttons a:last-child {
+  background: #ff6b35;
+  color: white;
+  border: none;
+  box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+}
+
+.nav-buttons a:last-child:hover {
+  background: #e55a2b;
+  transform: translateY(-2px);
+}
+
 
     /* Hero */
     .hero { background:linear-gradient(135deg,#f8f9fa,#e9ecef); min-height:100vh; display:flex;align-items:center;padding:2rem; position:relative; overflow:hidden; }
@@ -149,7 +181,7 @@
       </ul>
       <div class="nav-buttons">
         <a href="{{ url_for('auth.login') }}">Login</a>
-      <a href="{{ url_for('auth.register') }}">Register</a>
+      <a href="{{ url_for('auth.register') }}">Get Started</a>
 
       </div>
     </div>
