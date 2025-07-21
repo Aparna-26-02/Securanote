@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Verify OTP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap" rel="stylesheet">
   <style>
     * {
@@ -13,7 +13,7 @@
     body {
       margin: 0;
       font-family: 'Space Grotesk', sans-serif;
-      background: linear-gradient(135deg, #6C63FF, #A084E8);
+      background: linear-gradient(to right, #7569f1, #8a6cf1);
       height: 100vh;
       display: flex;
       align-items: center;
@@ -23,51 +23,63 @@
     .container {
       background: white;
       border-radius: 20px;
-      padding: 2.5rem;
-      max-width: 420px;
+      padding: 3rem 2rem;
+      max-width: 430px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      animation: fadeIn 0.5s ease-in-out;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .container .icon {
+      font-size: 2.8rem;
+      color: #5a4bff;
+      margin-bottom: 1rem;
     }
 
     .container h2 {
-      margin-top: 1rem;
       font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #222;
     }
 
     .container p {
-      color: #555;
       font-size: 0.95rem;
+      color: #555;
     }
 
-    .container p a {
-      color: #6C63FF;
-      text-decoration: none;
-      font-weight: 500;
+    .container p strong {
+      color: #5a4bff;
+      display: block;
+      margin-top: 2px;
     }
 
-    .otp-inputs {
+    form {
+      margin-top: 2rem;
+    }
+
+    .otp-box {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin: 1.5rem 0;
+      gap: 12px;
+      margin-bottom: 1.8rem;
     }
 
-    .otp-inputs input[type="text"] {
-      width: 45px;
-      height: 55px;
-      font-size: 1.5rem;
+    .otp-box input[type="text"] {
+      width: 52px;
+      height: 58px;
+      font-size: 1.6rem;
       text-align: center;
-      border: 2px solid #ddd;
+      border: 2px solid #d9d9d9;
       border-radius: 12px;
-      transition: 0.2s ease;
-      outline: none;
+      transition: border 0.3s ease;
     }
 
-    .otp-inputs input:focus {
-      border-color: #6C63FF;
-      box-shadow: 0 0 5px #b6b0fa;
+    .otp-box input:focus {
+      border-color: #5a4bff;
+      outline: none;
+      box-shadow: 0 0 4px #a2a2ff;
     }
 
     .verify-btn {
@@ -83,39 +95,39 @@
     }
 
     .verify-btn:hover {
-      background-color: #4b3dd9;
+      background-color: #473ad9;
     }
 
-    .resend-section {
-      margin-top: 1.2rem;
-      font-size: 0.9rem;
+    .resend {
+      margin-top: 1.5rem;
+      font-size: 0.93rem;
+      color: #555;
     }
 
-    .resend-section a,
-    #resend-btn {
-      color: #6C63FF;
-      font-weight: 500;
-      border: none;
+    .resend button {
       background: none;
-      cursor: pointer;
+      border: none;
+      color: #5a4bff;
+      font-weight: 500;
       font-size: 0.95rem;
+      cursor: pointer;
     }
 
-    #resend-btn:disabled {
+    .resend button:disabled {
       color: #aaa;
       cursor: not-allowed;
     }
 
     .timer {
+      margin-top: 8px;
       font-size: 0.8rem;
       color: #666;
-      margin-top: 4px;
     }
 
     @keyframes fadeIn {
       0% {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(20px);
       }
       100% {
         opacity: 1;
@@ -126,24 +138,26 @@
 </head>
 <body>
   <div class="container">
-    <div style="font-size: 2.5rem; color: #6C63FF;">✔️</div>
+    <div class="icon">✔️</div>
     <h2>Verify Your Email</h2>
-    <p>We've sent a verification code to<br><strong style="color:#6C63FF">user@example.com</strong></p>
+    <p>We've sent a verification code to<br>
+      <strong>{{ email }}</strong>
+    </p>
 
+    <!-- OTP Form -->
     <form method="POST">
-      <p>Enter verification code</p>
-      <div class="otp-inputs">
-        <!-- We keep it simple: one input field, but style it like 6 boxes -->
-        <input type="text" name="otp" maxlength="6" pattern="\d*" required />
+      <label for="otp" style="font-weight: 500; margin-bottom: 8px; display: block; color: #333;">Enter verification code</label>
+      <div class="otp-box">
+        <input type="text" name="otp" maxlength="6" required pattern="\d*" />
       </div>
-      <p><input type="submit" value="Verify OTP" class="verify-btn"></p>
+      <input type="submit" value="Verify OTP" class="verify-btn" />
     </form>
 
-    <!-- Resend OTP form -->
+    <!-- Resend OTP -->
     <form method="POST" action="{{ url_for('auth.resend_otp') }}">
-      <div class="resend-section">
-        <span>Didn't receive the code?</span>
-        <button id="resend-btn" type="submit" disabled>Resend OTP</button>
+      <div class="resend">
+        Didn't receive the code?
+        <button type="submit" id="resend-btn" disabled>Resend OTP</button>
         <div class="timer">Resend available in <span id="countdown">00:10</span></div>
       </div>
     </form>
@@ -151,19 +165,17 @@
 
   <script>
     const resendBtn = document.getElementById('resend-btn');
-    const countdownText = document.getElementById('countdown');
+    const countdownDisplay = document.getElementById('countdown');
     let countdown = 10;
 
     const interval = setInterval(() => {
       if (countdown > 0) {
-        countdownText.textContent = `00:${countdown < 10 ? '0' : ''}${countdown}`;
-        resendBtn.textContent = "Resend OTP";
+        countdownDisplay.textContent = `00:${countdown < 10 ? '0' : ''}${countdown}`;
         countdown--;
       } else {
         clearInterval(interval);
         resendBtn.disabled = false;
-        countdownText.textContent = "";
-        resendBtn.textContent = "Resend OTP";
+        countdownDisplay.textContent = '';
       }
     }, 1000);
   </script>
