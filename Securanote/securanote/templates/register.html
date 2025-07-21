@@ -99,27 +99,17 @@
       margin-bottom: 4px;
     }
 
-    /* Updated button style */
     button[type="submit"],
-    .btn-primary {
+    .submit-button {
       width: 100%;
-      background-color: #6c5ce7;
-      color: white;
-      font-weight: 600;
-      font-size: 16px;
-      padding: 12px;
+      background-color: #4f46e5;
+      color: #fff;
       border: none;
+      padding: 12px;
+      font-size: 16px;
       border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
       cursor: pointer;
       margin-top: 1rem;
-      transition: 0.3s ease;
-    }
-
-    button[type="submit"]:hover,
-    .btn-primary:hover {
-      background-color: #5a4ae0;
-      transform: translateY(-2px);
     }
 
     .footer-link {
@@ -145,6 +135,12 @@
 
     .valid { color: #00c853; }
     .invalid { color: #d50000; }
+
+    input:-webkit-autofill {
+      box-shadow: 0 0 0px 1000px white inset !important;
+      -webkit-text-fill-color: #000 !important;
+      border: 1px solid #ccc !important;
+    }
   </style>
 </head>
 <body>
@@ -162,19 +158,19 @@
       <div class="step">3</div>
     </div>
 
-    <form method="POST">
+    <form method="POST" autocomplete="off">
       {{ form.hidden_tag() }}
       <p>
         <label>{{ form.username.label }}</label>
-        {{ form.username(size=32) }}
+        {{ form.username(size=32, autocomplete="off") }}
       </p>
       <p>
         <label>{{ form.email.label }}</label>
-        {{ form.email(size=32, type='email') }}
+        {{ form.email(size=32, type='email', autocomplete="off") }}
       </p>
       <p>
         <label>{{ form.password.label }}</label>
-        {{ form.password(size=32, id='password', type='password') }}
+        {{ form.password(size=32, id='password', type='password', autocomplete="new-password") }}
         <label><input type="checkbox" id="show-password"> Show Password</label>
       </p>
 
@@ -189,12 +185,13 @@
         </ul>
       </div>
 
-      <p>{{ form.submit(class_="btn btn-primary") }}</p>
+      <p>{{ form.submit(class_="submit-button") }}</p>
     </form>
 
     <div class="footer-link">
-      Already have an account? <a href="login.html">Sign in</a>
+      Already have an account? <a href ="{{ url_for('auth.login') }}">Sign in</a>
     </div>
+    <div class="footer-link" style="color: #999; font-size: 12px;">This is a demo registration page</div>
   </div>
 
   <script>
