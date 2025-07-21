@@ -67,9 +67,9 @@
     }
 
     .otp-box input[type="text"] {
-      width: 52px;
-      height: 58px;
-      font-size: 1.6rem;
+      width: 48px;
+      height: 56px;
+      font-size: 1.5rem;
       text-align: center;
       border: 2px solid #d9d9d9;
       border-radius: 12px;
@@ -145,11 +145,14 @@
     </p>
 
     <!-- OTP Form -->
-    <form method="POST">
+    <form method="POST" onsubmit="return combineOTP()">
       <label for="otp" style="font-weight: 500; margin-bottom: 8px; display: block; color: #333;">Enter verification code</label>
       <div class="otp-box">
-        <input type="text" name="otp" maxlength="6" required pattern="\d*" />
+        {% for i in range(6) %}
+          <input type="text" name="otp_digit" maxlength="1" required oninput="moveNext(this, {{ i }})" id="otp{{ i }}" pattern="\d*" />
+        {% endfor %}
       </div>
+      <input type="hidden" name="otp" id="otp-full" />
       <input type="submit" value="Verify OTP" class="verify-btn" />
     </form>
 
@@ -178,6 +181,27 @@
         countdownDisplay.textContent = '';
       }
     }, 1000);
+
+    function moveNext(input, index) {
+      const next = document.getElementById(`otp${index + 1}`);
+      if (input.value.length === 1 && next) {
+        next.focus();
+      }
+      if (input.value === "" && index > 0) {
+        document.getElementById(`otp${index - 1}`).focus();
+      }
+    }
+
+    function combineOTP() {
+      let otp = '';
+      for (let i = 0; i < 6; i++) {
+        const digit = document.getElementById(`otp${i}`).value;
+        if (!digit) return false;
+        otp += digit;
+      }
+      document.getElementById('otp-full').value = otp;
+      return true;
+    }
   </script>
 </body>
 </html>
