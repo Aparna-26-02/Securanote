@@ -1,195 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SecuraNote - Secure Your Digital Assets</title>
+  <meta charset="UTF-8">
+  <title>SecuraNote - Next-Gen Security for Your Digital Assets</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #f8f9fc;
+      font-family: 'Open Sans', sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #1a1a1a, #111);
     }
-    header {
-      background: white;
+
+    .custom-cursor {
+      width: 20px;
+      height: 20px;
+      border: 2px solid gold;
+      border-radius: 50%;
+      position: absolute;
+      pointer-events: none;
+      transition: transform 0.1s ease;
+      z-index: 9999;
+    }
+
+    nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem 2rem;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem 3rem;
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
     }
-    .logo {
+
+    nav h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: gold;
+      letter-spacing: 1px;
+    }
+
+    nav ul {
+      list-style: none;
       display: flex;
-      align-items: center;
-      font-weight: bold;
-      font-size: 1.2rem;
-      color: #0c0c2c;
+      gap: 2rem;
     }
-    .logo i {
-      margin-right: 0.5rem;
-      color: #f97316;
-    }
-    nav a {
-      margin: 0 1rem;
+
+    nav ul li a {
       text-decoration: none;
-      color: #0c0c2c;
-      font-weight: 500;
-    }
-    .cta-button {
-      background: #f97316;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 4px;
+      color: #fff;
       font-weight: bold;
-      text-decoration: none;
+      transition: color 0.3s;
     }
+
+    nav ul li a:hover {
+      color: gold;
+    }
+
     .hero {
-      padding: 4rem 2rem;
-      background: url('https://www.transparenttextures.com/patterns/dotted-background.png');
-      text-align: left;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5rem 3rem;
+      position: relative;
     }
-    .hero h1 {
+
+    .hero-content {
+      flex: 1;
+      padding-right: 3rem;
+    }
+
+    .hero h2 {
+      font-family: 'Playfair Display', serif;
       font-size: 3rem;
-      max-width: 700px;
-      line-height: 1.2;
-      font-weight: bold;
-      color: #0c0c2c;
+      margin-bottom: 1.5rem;
+      color: #f9f9f9;
     }
-    .hero h1 span {
-      background: linear-gradient(to right, #f97316, #65a30d, #10b981);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+
     .hero p {
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin-top: 1rem;
-      color: #333;
+      font-size: 1.2rem;
+      line-height: 1.8;
+      color: #ddd;
     }
+
     .hero-buttons {
       margin-top: 2rem;
     }
+
     .hero-buttons a {
-      padding: 0.9rem 2rem;
-      font-weight: bold;
-      border-radius: 4px;
+      padding: 0.8rem 1.5rem;
       margin-right: 1rem;
-      display: inline-block;
-      text-decoration: none;
-    }
-    .btn-primary {
-      background-color: #f97316;
-      color: white;
-    }
-    .btn-outline {
-      border: 2px solid #f97316;
-      color: #f97316;
-      background-color: white;
-    }
-    .section {
-      padding: 4rem 2rem;
-    }
-    .section h2 {
-      text-align: center;
-      font-size: 2rem;
-      margin-bottom: 2rem;
-      color: #0c0c2c;
-    }
-    .features, .how-it-works {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 2rem;
-    }
-    .card {
-      flex: 1 1 300px;
-      background: white;
+      background: gold;
+      color: #111;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-      padding: 2rem;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .hero-buttons a:hover {
+      background: #ffcc00;
+    }
+
+    .hero-animation {
+      flex: 1;
+    }
+
+    .hero-animation img {
+      width: 100%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .features {
+      background: #111;
+      padding: 4rem 3rem;
+      display: flex;
+      justify-content: space-around;
       text-align: center;
     }
-    .card i {
-      font-size: 2rem;
-      color: #f97316;
+
+    .feature {
+      max-width: 300px;
+    }
+
+    .feature i {
+      font-size: 2.5rem;
+      color: gold;
       margin-bottom: 1rem;
     }
-    .card h3 {
-      color: #0c0c2c;
+
+    .feature h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
     }
-    .card p {
-      color: #555;
+
+    .feature p {
+      color: #ccc;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: #000;
+      color: #999;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <i class="fas fa-lock"></i> SECURANOTE
-    </div>
-    <nav>
-      <a href="#features">FEATURES</a>
-      <a href="#security">SECURITY</a>
-      <a href="#pricing">PRICING</a>
-      <a href="#about">ABOUT</a>
-      <a href="login.html">LOGIN</a>
-    </nav>
-    <a href="register.html" class="cta-button">GET STARTED</a>
-  </header>
+  <div class="custom-cursor" id="cursor"></div>
+
+  <nav>
+    <h1>SecuraNote</h1>
+    <ul>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="register.html">Register</a></li>
+      <li><a href="#">Contact Us</a></li>
+      <li><a href="#">Help</a></li>
+    </ul>
+  </nav>
 
   <section class="hero">
-    <h1>NEXT-GEN <span>SECURITY</span> FOR YOUR DIGITAL ASSETS</h1>
-    <p>Military-grade encryption for your notes, images, and videos with three-pin authentication and secure S3 storage.</p>
-    <div class="hero-buttons">
-      <a href="#" class="btn-primary">START ENCRYPTING</a>
-      <a href="#" class="btn-outline">LEARN MORE</a>
+    <div class="hero-content">
+      <h2>Next-Gen Security for Your Digital Assets</h2>
+      <p>SecuraNote offers military-grade encryption and secure cloud syncing for your sensitive data and notes. Your privacy is our top priority, always.</p>
+      <div class="hero-buttons">
+        <a href="register.html">Get Started</a>
+        <a href="#">Learn More</a>
+      </div>
+    </div>
+    <div class="hero-animation">
+      <img src="https://assets7.lottiefiles.com/packages/lf20_1pxqjqps.json" alt="Secure animation" />
     </div>
   </section>
 
-  <section id="features" class="section">
-    <h2>ADVANCED SECURITY FEATURES</h2>
-    <div class="features">
-      <div class="card">
-        <i class="fas fa-lock"></i>
-        <h3>END-TO-END ENCRYPTION</h3>
-        <p>Your data is encrypted before it leaves your device and can only be decrypted with your unique keys.</p>
-      </div>
-      <div class="card">
-        <i class="fas fa-shield-alt"></i>
-        <h3>THREE-PIN AUTHENTICATION</h3>
-        <p>An additional layer of security with a three-pin authentication system to access your encrypted data.</p>
-      </div>
-      <div class="card">
-        <i class="fas fa-cloud"></i>
-        <h3>S3 SECURE STORAGE</h3>
-        <p>Your encrypted data is stored in Amazon S3 with additional security measures for maximum protection.</p>
-      </div>
+  <section class="features">
+    <div class="feature">
+      <i class="fas fa-lock"></i>
+      <h3>End-to-End Encryption</h3>
+      <p>All your notes are encrypted before they even leave your device.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-cloud"></i>
+      <h3>Cloud Sync</h3>
+      <p>Access your secure notes across all your devices seamlessly.</p>
+    </div>
+    <div class="feature">
+      <i class="fas fa-user-shield"></i>
+      <h3>Role-Based Access</h3>
+      <p>Grant access only to those who need it, and no one else.</p>
     </div>
   </section>
 
-  <section id="how-it-works" class="section" style="background: #e8f1fc;">
-    <h2>HOW SECURANOTE WORKS</h2>
-    <div class="how-it-works">
-      <div class="card">
-        <h3>UPLOAD</h3>
-        <p>Upload your notes, images, or videos to the SecuraNote platform.</p>
-      </div>
-      <div class="card">
-        <h3>ENCRYPT</h3>
-        <p>Your data is encrypted with military-grade encryption algorithms.</p>
-      </div>
-      <div class="card">
-        <h3>STORE</h3>
-        <p>Encrypted data is securely stored in Amazon S3 storage.</p>
-      </div>
-      <div class="card">
-        <h3>ACCESS</h3>
-        <p>Access your data anytime with your three-pin authentication.</p>
-      </div>
-    </div>
-  </section>
+  <footer>
+    &copy; 2025 SecuraNote. All rights reserved.
+  </footer>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = `${e.pageX}px`;
+      cursor.style.top = `${e.pageY}px`;
+    });
+  </script>
 </body>
 </html>
