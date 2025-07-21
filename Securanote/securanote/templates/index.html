@@ -24,6 +24,100 @@
       0% { background-position: 0 0; }
       100% { background-position: 100px 100px; }
     }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #0e0e0e;
+      font-family: 'Roboto', sans-serif;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(#444 1px, transparent 1px);
+      background-size: 20px 20px;
+      animation: scrollDots 100s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes scrollDots {
+      0% { background-position: 0 0; }
+      100% { background-position: 1000px 1000px; }
+    }
+
+    .topnav {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px 40px;
+      background: rgba(0, 0, 0, 0.7);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topnav .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8em;
+      color: #e0c478;
+    }
+
+    .topnav .nav-links a {
+      color: #fff;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .topnav .nav-links a:hover {
+      color: #e0c478;
+    }
+
+    .container {
+      padding-top: 150px;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3em;
+      margin-bottom: 20px;
+      color: #ffd700;
+    }
+
+    p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      padding: 15px 30px;
+      margin: 10px;
+      font-size: 1em;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      background: linear-gradient(145deg, #d4af37, #f0e68c);
+      color: #000;
+      font-weight: bold;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px #f0e68c;
+    }
 
 
     /* Nav */
@@ -147,32 +241,7 @@
     .footer-section a{color:#bdc3c7;transition:.3s;}
     .footer-section a:hover{color:#ff6b35;}
     .footer-bottom{text-align:center;margin-top:2rem;padding-top:2rem;border-top:1px solid #34495e;color:#bdc3c7;}
-    .btn {
-  display: inline-block;
-  padding: 12px 24px;
-  border-radius: 30px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-
-.btn-login {
-  background-color: #333;
-  color: white;
-}
-
-.btn-login:hover {
-  background-color: #555;
-}
-
-.btn-get-started {
-  background-color: #d4af37; /* light golden */
-  color: white;
-}
-
-.btn-get-started:hover {
-  background-color: #bfa133;
-}
+    
 
   </style>
 </head>
@@ -189,11 +258,8 @@
         <li><a href="#about">ABOUT</a></li>
       </ul>
       <div class="nav-buttons">
-        <!--Login Button-- >
-<a href="login.html" class="btn btn-login">Login</a>
-
-<!-- Get Started Button -->
-<a href="register.html" class="btn btn-get-started">Get Started</a>
+        <a href="{{ url_for('auth.login') }}">Login</a>
+      <a href="{{ url_for('auth.register') }}">Register</a>
 
       </div>
     </div>
