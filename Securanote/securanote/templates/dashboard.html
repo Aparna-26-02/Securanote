@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard | SecuraNote</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vault Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
     .flash-message {
@@ -15,6 +15,7 @@
       border-radius: 5px;
       animation: fadeOut 1s ease-in-out 3s forwards;
     }
+
     @keyframes fadeOut {
       to {
         opacity: 0;
@@ -40,8 +41,8 @@
       <a href="#" class="block px-4 py-2 rounded hover:bg-blue-800">Settings</a>
     </nav>
     <div class="p-4 border-t border-blue-700">
-      <p class="text-sm">John Doe</p>
-      <p class="text-xs text-blue-300">Premium User</p>
+      <p class="text-sm">{{ user.username }}</p>
+      <p class="text-xs text-blue-300">Vault User</p>
     </div>
   </div>
 
@@ -52,7 +53,7 @@
       <h2 class="text-xl font-semibold">Dashboard</h2>
       <div class="flex items-center space-x-4">
         <input type="text" placeholder="Search notes..." class="px-3 py-2 border rounded w-64" />
-        <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ New Note</a>
+        <button onclick="toggleNoteForm()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ New Note</button>
       </div>
     </div>
 
@@ -65,28 +66,12 @@
       {% endfor %}
     {% endwith %}
 
-    <!-- Stat Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <div class="bg-white shadow rounded-lg p-4">
-        <p class="text-gray-500">Total Notes</p>
-        <p class="text-2xl font-bold">12</p>
-      </div>
-      <div class="bg-white shadow rounded-lg p-4">
-        <p class="text-gray-500">Downloads</p>
-        <p class="text-2xl font-bold">5</p>
-      </div>
-      <div class="bg-white shadow rounded-lg p-4">
-        <p class="text-gray-500">Encrypted Notes</p>
-        <p class="text-2xl font-bold">8</p>
-      </div>
-    </div>
-
-    <!-- Create Note Form -->
-    <div class="bg-white shadow rounded-lg p-6 mb-6">
-      <h3 class="text-lg font-semibold mb-4">Create New Secure Note</h3>
+    <!-- Add Note Form -->
+    <div id="note-form" class="bg-white shadow rounded-lg p-6 mb-6 hidden">
+      <h3 class="text-lg font-semibold mb-4">Add a New Note</h3>
       <form method="POST" enctype="multipart/form-data" class="space-y-4">
         <input name="title" placeholder="Note Title" required class="w-full px-4 py-2 border rounded" />
-        <textarea name="content" placeholder="Write your secure note here..." required class="w-full h-32 px-4 py-2 border rounded"></textarea>
+        <textarea name="content" placeholder="Note content" required class="w-full h-32 px-4 py-2 border rounded"></textarea>
         <input type="file" name="file" accept="image/*,audio/*" class="block" />
         <select name="encryption_type" required class="w-full px-4 py-2 border rounded">
           <option value="AES">AES</option>
@@ -98,17 +83,32 @@
     </div>
 
     <!-- Notes List -->
-    <div>
-      <h3 class="text-lg font-semibold mb-4">Your Notes</h3>
-      {% for note in notes %}
+    <h3 class="text-lg font-semibold mb-4">Your Notes</h3>
+    {% if notes %}
+      {% for note in notes|reverse %}
         <div class="bg-white p-4 shadow rounded-lg mb-4">
           <div class="flex justify-between">
             <div>
               <strong>{{ note.title }}</strong><br>
               <small>Created: {{ note.timestamp|localtime }}</small><br>
-              <small>Encrypted with: {{ note.encryption_type }}</small>
+              <small>Encrypted with: {{ note.encryption_type }}</small><br>
+
+              {% if note.file_path %}
+                {% set file_url = url_for('static', filename='uploads/' ~ note.file_path) %}
+                <div class="mt-2">
+                  {% if note.file_path.endswith('.jpg') or note.file_path.endswith('.png') or note.file_path.endswith('.jpeg') %}
+                    <img src="{{ file_url }}" alt="Note Image" class="mt-2 w-48 border" />
+                  {% elif note.file_path.endswith('.mp3') or note.file_path.endswith('.wav') %}
+                    <audio controls class="mt-2">
+                      <source src="{{ file_url }}">
+                      Your browser does not support audio playback.
+                    </audio>
+                  {% endif %}
+                </div>
+              {% endif %}
             </div>
-            <div class="flex space-x-2">
+
+            <div class="flex flex-col space-y-2 text-right">
               <form action="{{ url_for('notes.view_note', note_id=note.id) }}" method="GET">
                 <button class="bg-blue-500 text-white px-3 py-1 rounded">View</button>
               </form>
@@ -121,15 +121,25 @@
             </div>
           </div>
         </div>
-      {% else %}
-        <p>No notes yet.</p>
       {% endfor %}
-    </div>
+    {% else %}
+      <p>No notes yet.</p>
+    {% endif %}
 
+    <!-- Logout -->
     <div class="mt-6">
       <a href="{{ url_for('auth.logout') }}" class="text-blue-600 hover:underline">Logout</a>
     </div>
   </div>
 </div>
+
+<!-- Script -->
+<script>
+  function toggleNoteForm() {
+    const form = document.getElementById('note-form');
+    form.classList.toggle('hidden');
+    form.scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
 </body>
 </html>
