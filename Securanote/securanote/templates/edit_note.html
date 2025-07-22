@@ -1,85 +1,201 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Edit Note</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
+        /* Base Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        input, textarea, select {
-            width: 100%;
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            width: 400px;
+            padding: 30px;
+            text-align: center;
+            animation: slideUp 0.8s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .card h2 {
             margin-bottom: 10px;
-            padding: 8px;
+            font-size: 22px;
+            color: #1e3c72;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .lock-icon {
+            font-size: 40px;
+            color: #4a90e2;
+            margin-bottom: 15px;
+            animation: bounce 1s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        form {
+            text-align: left;
         }
 
         label {
-            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
         }
 
-        #pin-field {
-            margin-top: 10px;
+        input[type="text"],
+        input[type="password"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            transition: 0.3s ease;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+            outline: none;
         }
 
         button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
+            width: 100%;
+            background-color: #2563eb;
             color: white;
+            padding: 12px;
             border: none;
+            border-radius: 8px;
+            font-size: 16px;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #1e40af;
+            transform: scale(1.03);
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
         }
 
-        a {
-            display: inline-block;
+        .back-link {
+            display: block;
             margin-top: 20px;
+            text-align: center;
+            color: #2563eb;
             text-decoration: none;
-            color: #007BFF;
+            transition: color 0.3s ease;
         }
 
-        a:hover {
+        .back-link:hover {
             text-decoration: underline;
+            color: #1e40af;
+        }
+
+        #pin-field {
+            display: none;
+        }
+
+        .show-pin-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            margin-top: -10px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 13px;
+            margin-top: -10px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <h2>Edit Note</h2>
+    <div class="card">
+        <div class="lock-icon">🔒</div>
+        <h2>Create PIN to Edit Note</h2>
+        <p>Please enter your secure PIN to edit this note</p>
 
-    <form method="POST">
-        <label>Title:</label>
-        <input name="title" value="{{ note.title }}" required>
+        <form method="POST">
+            <label>Title:</label>
+            <input name="title" value="{{ note.title }}" required>
 
-        <label>Content:</label>
-        <textarea name="content" required>{{ decrypted }}</textarea>
+            <label>Content:</label>
+            <textarea name="content" required>{{ decrypted }}</textarea>
 
-        <label>Encryption Type:</label>
-        <select name="encryption_type" required>
-            <option value="AES" {% if note.encryption_type == 'AES' %}selected{% endif %}>AES</option>
-            <option value="ChaCha" {% if note.encryption_type == 'ChaCha' %}selected{% endif %}>ChaCha</option>
-        </select>
+            <label>Encryption Type:</label>
+            <select name="encryption_type" required>
+                <option value="AES" {% if note.encryption_type == 'AES' %}selected{% endif %}>AES</option>
+                <option value="ChaCha" {% if note.encryption_type == 'ChaCha' %}selected{% endif %}>ChaCha</option>
+            </select>
 
-        <label>
-            <input type="checkbox" id="change-pin-toggle" onchange="togglePin()"> Change PIN
-        </label>
+            <label>
+                <input type="checkbox" id="change-pin-toggle" onchange="togglePin()"> Change PIN
+            </label>
 
-        <div id="pin-field" style="display: none;">
-            <label>New 4-digit PIN:</label>
-            <input type="password" name="pin" minlength="4" maxlength="6">
-        </div>
+            <div id="pin-field">
+                <label>New 4-digit PIN:</label>
+                <input type="password" name="pin" minlength="4" maxlength="6" placeholder="Enter new PIN">
+                <div class="show-pin-toggle">
+                    <input type="checkbox" onclick="toggleVisibility(this)"> Show PIN
+                </div>
+            </div>
 
-        <button type="submit">Save Changes</button>
-    </form>
+            <button type="submit">Save Changes</button>
+        </form>
 
-    <a href="{{ url_for('notes.dashboard') }}">← Back to Dashboard</a>
+        <a class="back-link" href="{{ url_for('notes.dashboard') }}">← Back to Dashboard</a>
+    </div>
 
     <script>
         function togglePin() {
             const pinField = document.getElementById("pin-field");
             pinField.style.display = pinField.style.display === "none" ? "block" : "none";
+        }
+
+        function toggleVisibility(checkbox) {
+            const pinInput = document.querySelector('input[name="pin"]');
+            pinInput.type = checkbox.checked ? "text" : "password";
         }
     </script>
 </body>
