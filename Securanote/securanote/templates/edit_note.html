@@ -1,87 +1,254 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Edit Note</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecuraNote - Edit Note</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
+            background: linear-gradient(135deg, #1a237e, #283593);
+            min-height: 100vh;
         }
-
-        input, textarea, select {
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 8px;
+        .note-container {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
         }
-
-        label {
-            font-weight: bold;
+        .btn-primary {
+            background: linear-gradient(135deg, #3949ab, #5c6bc0);
+            transition: all 0.3s ease;
         }
-
-        #pin-field {
-            margin-top: 10px;
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #303f9f, #3f51b5);
+            transform: translateY(-2px);
         }
-
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
+        .btn-secondary {
+            background: linear-gradient(135deg, #78909c, #90a4ae);
+            transition: all 0.3s ease;
         }
-
-        button:hover {
-            background-color: #45a049;
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #607d8b, #78909c);
+            transform: translateY(-2px);
         }
-
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #007BFF;
+        .encryption-option {
+            transition: all 0.2s ease;
         }
-
-        a:hover {
-            text-decoration: underline;
+        .encryption-option:hover {
+            transform: translateY(-2px);
+        }
+        .encryption-option.selected {
+            border-color: #3949ab;
+            background-color: rgba(57, 73, 171, 0.1);
         }
     </style>
 </head>
-<body>
-    <h2>Edit Note</h2>
-
-    <form method="POST">
-        <label>Title:</label>
-        <input name="title" value="{{ note.title }}" required>
-
-        <label>Content:</label>
-        <textarea name="content" required>{{ decrypted }}</textarea>
-
-        <label>Encryption Type:</label>
-        <select name="encryption_type" required>
-            <option value="AES" {% if note.encryption_type == 'AES' %}selected{% endif %}>AES</option>
-            <option value="ChaCha" {% if note.encryption_type == 'ChaCha' %}selected{% endif %}>ChaCha</option>
-        </select>
-
-        <label>
-            <input type="checkbox" id="change-pin-toggle" onchange="togglePin()"> Change PIN
-        </label>
-
-        <div id="pin-field" style="display: none;">
-            <label>New 4-digit PIN:</label>
-            <input type="password" name="pin" minlength="4" maxlength="6">
+<body class="p-4 md:p-6 font-sans text-gray-800">
+    <div class="max-w-3xl mx-auto note-container p-6 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl md:text-3xl font-bold text-indigo-900">Edit Note</h1>
+            <button id="backBtn" class="btn-secondary px-4 py-2 rounded-lg text-white font-medium flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Dashboard
+            </button>
         </div>
 
-        <button type="submit">Save Changes</button>
-    </form>
+        <div class="space-y-6">
+            <!-- Title Input -->
+            <div>
+                <label for="noteTitle" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <input type="text" id="noteTitle" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter note title" value="Meeting Notes">
+            </div>
 
-    <a href="{{ url_for('notes.dashboard') }}">← Back to Dashboard</a>
+            <!-- Content Input -->
+            <div>
+                <label for="noteContent" class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                <textarea id="noteContent" rows="8" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter your secure note content">This is a sample note content. Replace with your actual note content that needs to be securely stored.</textarea>
+            </div>
+
+            <!-- Encryption Options -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-3">Encryption Method</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div id="aes256" class="encryption-option selected border-2 p-4 rounded-lg cursor-pointer flex items-center">
+                        <div class="bg-indigo-100 p-2 rounded-full mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-medium">AES-256</h3>
+                            <p class="text-sm text-gray-500">Advanced Encryption Standard</p>
+                        </div>
+                    </div>
+                    <div id="chacha20" class="encryption-option border-2 p-4 rounded-lg cursor-pointer flex items-center">
+                        <div class="bg-indigo-100 p-2 rounded-full mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-medium">ChaCha20</h3>
+                            <p class="text-sm text-gray-500">Stream Cipher Algorithm</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Change PIN Option -->
+            <div class="border-t pt-6">
+                <button id="changePinBtn" class="flex items-center text-indigo-600 font-medium hover:text-indigo-800 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                    </svg>
+                    Change PIN
+                </button>
+
+                <!-- PIN Change Form (Hidden by default) -->
+                <div id="pinChangeForm" class="mt-4 bg-gray-50 p-4 rounded-lg hidden">
+                    <h3 class="font-medium text-gray-800 mb-3">Change Security PIN</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label for="currentPin" class="block text-sm font-medium text-gray-700 mb-1">Current PIN</label>
+                            <input type="password" id="currentPin" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter current PIN">
+                        </div>
+                        <div>
+                            <label for="newPin" class="block text-sm font-medium text-gray-700 mb-1">New PIN</label>
+                            <input type="password" id="newPin" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter new PIN">
+                        </div>
+                        <div>
+                            <label for="confirmPin" class="block text-sm font-medium text-gray-700 mb-1">Confirm New PIN</label>
+                            <input type="password" id="confirmPin" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Confirm new PIN">
+                        </div>
+                        <div class="flex space-x-3">
+                            <button id="savePinBtn" class="btn-primary px-4 py-2 rounded-lg text-white font-medium">Save PIN</button>
+                            <button id="cancelPinBtn" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-100">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="pt-4">
+                <button id="saveNoteBtn" class="btn-primary px-6 py-3 rounded-lg text-white font-medium w-full md:w-auto">Save Note</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                    <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2" id="modalTitle">Note Saved Successfully</h3>
+                <p class="text-gray-500" id="modalMessage">Your note has been securely saved.</p>
+                <div class="mt-5">
+                    <button id="modalCloseBtn" class="btn-primary px-4 py-2 rounded-lg text-white font-medium">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        function togglePin() {
-            const pinField = document.getElementById("pin-field");
-            pinField.style.display = pinField.style.display === "none" ? "block" : "none";
-        }
-    </script>
-</body>
-</html>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Encryption option selection
+            const encryptionOptions = document.querySelectorAll('.encryption-option');
+            encryptionOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    encryptionOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
 
+            // Change PIN functionality
+            const changePinBtn = document.getElementById('changePinBtn');
+            const pinChangeForm = document.getElementById('pinChangeForm');
+            const cancelPinBtn = document.getElementById('cancelPinBtn');
+            const savePinBtn = document.getElementById('savePinBtn');
+
+            changePinBtn.addEventListener('click', function() {
+                pinChangeForm.classList.toggle('hidden');
+            });
+
+            cancelPinBtn.addEventListener('click', function() {
+                pinChangeForm.classList.add('hidden');
+                // Clear PIN inputs
+                document.getElementById('currentPin').value = '';
+                document.getElementById('newPin').value = '';
+                document.getElementById('confirmPin').value = '';
+            });
+
+            savePinBtn.addEventListener('click', function() {
+                const currentPin = document.getElementById('currentPin').value;
+                const newPin = document.getElementById('newPin').value;
+                const confirmPin = document.getElementById('confirmPin').value;
+
+                // Simple validation
+                if (!currentPin || !newPin || !confirmPin) {
+                    showModal('Error', 'Please fill in all PIN fields.');
+                    return;
+                }
+
+                if (newPin !== confirmPin) {
+                    showModal('Error', 'New PIN and confirmation do not match.');
+                    return;
+                }
+
+                // In a real app, you would verify the current PIN and save the new one
+                // For this demo, we'll just show success
+                showModal('PIN Updated', 'Your security PIN has been successfully updated.');
+                pinChangeForm.classList.add('hidden');
+                
+                // Clear PIN inputs
+                document.getElementById('currentPin').value = '';
+                document.getElementById('newPin').value = '';
+                document.getElementById('confirmPin').value = '';
+            });
+
+            // Save Note functionality
+            const saveNoteBtn = document.getElementById('saveNoteBtn');
+            saveNoteBtn.addEventListener('click', function() {
+                const title = document.getElementById('noteTitle').value;
+                const content = document.getElementById('noteContent').value;
+                const encryptionMethod = document.querySelector('.encryption-option.selected').id;
+
+                if (!title || !content) {
+                    showModal('Error', 'Please provide both title and content for your note.');
+                    return;
+                }
+
+                // In a real app, you would encrypt and save the note here
+                showModal('Note Saved', `Your note "${title}" has been securely saved using ${encryptionMethod.toUpperCase()} encryption.`);
+            });
+
+            // Back button functionality
+            const backBtn = document.getElementById('backBtn');
+            backBtn.addEventListener('click', function() {
+                // In a real app, this would navigate back to the dashboard
+                // For this demo, we'll just show a message
+                showModal('Navigation', 'This would take you back to the dashboard.');
+            });
+
+            // Modal functionality
+            const successModal = document.getElementById('successModal');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            
+            modalCloseBtn.addEventListener('click', function() {
+                successModal.classList.add('hidden');
+            });
+
+            function showModal(title, message) {
+                document.getElementById('modalTitle').textContent = title;
+                document.getElementById('modalMessage').textContent = message;
+                successModal.classList.remove('hidden');
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9631f952b20c3501',t:'MTc1MzE3NzE5OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
