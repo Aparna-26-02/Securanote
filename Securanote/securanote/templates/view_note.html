@@ -1,99 +1,95 @@
-<h2>{{ note.title }}</h2>
-<p>{{ decrypted }}</p>
-
-{% if note.file_path %}
-  <h5>Attached File:</h5>
-  {% set ext = note.file_path.rsplit('.', 1)[-1].lower() %}
-  
-  {% if ext in ['png', 'jpg', 'jpeg', 'gif'] %}
-    <img src="{{ file_url }}" width="300">
-  
-  {% elif ext == 'mp3' %}
-    <audio controls>
-      <source src="{{ file_url }}" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-
-  {% elif ext in ['mp4', 'webm', 'ogg'] and file_url %}
-    <video width="640" height="360" controls>
-        <source src="{{ file_url }}" type="video/{{ file_ext }}">
-        Your browser does not support the video tag.
-    </video>
-
-  {% else %}
-    <a href="{{ url_for('notes.view_file', filename=note.file_path) }}" target="_blank">Download File</a>
-  {% endif %}
-{% endif %}
-
-<hr>
-
-<form action="{{ url_for('notes.export_pdf') }}" method="POST">
-    <input type="hidden" name="title" value="{{ note.title }}">
-    <textarea name="content" style="display:none;">{{ decrypted }}</textarea>
-    {% if note.file_path %}
-        <input type="hidden" name="file_path" value="{{ note.file_path }}">
-    {% endif %}
-    <button type="submit" class="btn btn-primary">Download as PDF</button>
-</form>
-
-<hr>
-
-<h3>🔗 Share this note</h3>
-<form method="POST">
-    <label>
-        <input type="checkbox" name="view_once" id="view_once">
-        View once
-    </label><br><br>
-    <button type="submit" name="generate_link" class="btn btn-success">Generate Link</button>
-</form>
-
-{% if share_link %}
-    <div class="mt-3">
-        <p><strong>Shareable Link:</strong></p>
-        <input type="text" class="form-control" value="{{ share_link }}" readonly onclick="this.select();">
-
-        <div class="mt-2">
-            <a href="https://wa.me/?text={{ share_link | urlencode }}" target="_blank" class="btn btn-success btn-sm">Share Link via WhatsApp</a>
-            <a href="https://t.me/share/url?url={{ share_link | urlencode }}" target="_blank" class="btn btn-primary btn-sm">Share Link via Telegram</a>
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=&su=Note Shared from Securanote&body={{ share_link | urlencode }}" target="_blank">
-              <button class="btn btn-dark">Share Link via Gmail</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SecuraNote - Edit Note</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a237e, #283593);
+            min-height: 100vh;
+        }
+        .note-container {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #3949ab, #5c6bc0);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #303f9f, #3f51b5);
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #78909c, #90a4ae);
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #607d8b, #78909c);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-6 font-sans text-gray-800">
+    <div class="max-w-3xl mx-auto note-container p-6 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl md:text-3xl font-bold text-indigo-900">Edit Note</h1>
+            <a href="{{ url_for('notes.dashboard') }}" class="btn-secondary px-4 py-2 rounded-lg text-white font-medium flex items-center">
+                ← Back to Dashboard
             </a>
-
         </div>
+
+        <form method="POST" class="space-y-6">
+            <!-- Title -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <input type="text" name="title" value="{{ note.title }}" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" />
+            </div>
+
+            <!-- Content -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                <textarea name="content" rows="8" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">{{ decrypted }}</textarea>
+            </div>
+
+            <!-- Encryption Method -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Encryption Type</label>
+                <select name="encryption_type" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                    <option value="AES" {% if note.encryption_type == 'AES' %}selected{% endif %}>AES</option>
+                    <option value="ChaCha" {% if note.encryption_type == 'ChaCha' %}selected{% endif %}>ChaCha</option>
+                </select>
+            </div>
+
+            <!-- Toggle PIN -->
+            <div>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" id="change-pin-toggle" onchange="togglePin()" class="mr-2">
+                    <span class="text-indigo-700 font-medium">Change PIN</span>
+                </label>
+            </div>
+
+            <!-- New PIN Field -->
+            <div id="pin-field" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">New 4-digit PIN</label>
+                <input type="password" name="pin" minlength="4" maxlength="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" />
+            </div>
+
+            <!-- Submit -->
+            <div class="pt-4">
+                <button type="submit" class="btn-primary px-6 py-3 rounded-lg text-white font-medium w-full md:w-auto">Save Changes</button>
+            </div>
+        </form>
     </div>
-{% endif %}
 
-{% if qr_code_base64 %}
-  <p><strong>QR Code:</strong></p>
-  <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="QR Code" style="max-width: 200px;">
-
-  <div class="mt-3">
-    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=&su=QR%20Code%20for%20Your%20Note&body=Hi,%0A%0AHere%20is%20the%20QR%20code%20for%20accessing%20my%20note:%0A{{ qr_image_url | urlencode }}%0A%0AScan%20it%20to%20view%20the%20note.%0A" target="_blank">
-      <button class="btn btn-dark">Share QR via Gmail</button>
-    </a>
-
-    <a href="data:image/png;base64,{{ qr_code_base64 }}" download="qr_code.png">
-      <button class="btn btn-secondary">Download QR Code</button>
-    </a>
-
-    <p class="text-muted mt-2">To share via WhatsApp or Telegram, download the QR image and upload it manually.</p>
-  </div>
-{% endif %}
-
-<hr>
-
-<p><a href="{{ url_for('notes.dashboard') }}">Back to Dashboard</a></p>
-
-<script>
-function shareQR() {
-    if (navigator.share) {
-        navigator.share({
-            title: 'Secure Note QR Code',
-            text: 'Here is your QR code to access the note.',
-            url: "{{ qr_image_url }}"
-        }).catch((error) => console.log('Share failed:', error));
-    } else {
-        alert("Sharing not supported on this browser.");
-    }
-}
-</script>
+    <script>
+        function togglePin() {
+            const pinField = document.getElementById('pin-field');
+            pinField.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
