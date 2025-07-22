@@ -2,163 +2,129 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Note</title>
+    <title>Verify PIN to Edit Note</title>
     <style>
         body {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background: linear-gradient(to bottom right, #1e3a8a, #2a4dbf);
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1d3b78, #1a2d59);
+            color: #1f1f1f;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            color: #1f2937;
+            justify-content: center;
+            height: 100vh;
         }
 
         .container {
-            background-color: #f9fafb;
-            margin-top: 60px;
+            background: #f7f9fc;
             padding: 40px 30px;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 500px;
-            animation: fadeIn 0.6s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h2 {
-            font-size: 22px;
-            font-weight: bold;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
             text-align: center;
-            margin-bottom: 24px;
-            color: #111827;
+            width: 320px;
         }
 
-        label {
-            font-weight: 600;
-            display: block;
-            margin: 16px 0 6px;
-            color: #374151;
+        .container h2 {
+            margin-top: 15px;
+            font-size: 20px;
+            color: #1a1a1a;
         }
 
-        input[type="text"],
-        input[type="password"],
-        textarea,
-        select {
+        .container p {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        input[type="password"] {
+            padding: 12px;
+            font-size: 16px;
             width: 100%;
-            padding: 12px 14px;
-            font-size: 15px;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            outline: none;
-            transition: border 0.2s;
-            background-color: white;
-        }
-
-        input:focus,
-        textarea:focus,
-        select:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-        }
-
-        textarea {
-            height: 100px;
-            resize: vertical;
-        }
-
-        #pin-field {
-            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 12px;
         }
 
         button {
+            padding: 12px;
+            font-size: 16px;
             width: 100%;
-            margin-top: 24px;
-            padding: 14px;
             background-color: #2563eb;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: bold;
             color: white;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.2s;
         }
 
         button:hover {
-            background-color: #1d4ed8;
+            background-color: #1e4ed8;
+        }
+
+        .show-pin {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .message-error {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .message-info {
+            color: blue;
+            font-size: 14px;
+            margin-bottom: 10px;
         }
 
         .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 24px;
+            margin-top: 20px;
+            display: inline-block;
+            color: white;
             text-decoration: none;
-            color: #ffffff;
-            font-size: 15px;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-
-        .checkbox-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 6px;
             font-size: 14px;
-            margin-top: 10px;
         }
 
-        .checkbox-wrapper input {
-            margin: 0;
+        .lock-icon {
+            font-size: 32px;
+            color: #2563eb;
         }
 
     </style>
 </head>
 <body>
+
+    <a href="{{ url_for('notes.dashboard') }}" class="back-link">← Back to Dashboard</a>
+
     <div class="container">
-        <h2>Edit Note</h2>
+        <div class="lock-icon">🔒</div>
+        <h2>Create PIN to Edit Note</h2>
+        <p>Please enter your secure PIN to edit this note</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <p class="message-{{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
 
         <form method="POST">
-            <label for="title">Title:</label>
-            <input id="title" name="title" value="{{ note.title }}" required>
-
-            <label for="content">Content:</label>
-            <textarea id="content" name="content" required>{{ decrypted }}</textarea>
-
-            <label for="encryption_type">Encryption Type:</label>
-            <select id="encryption_type" name="encryption_type" required>
-                <option value="AES" {% if note.encryption_type == 'AES' %}selected{% endif %}>AES</option>
-                <option value="ChaCha" {% if note.encryption_type == 'ChaCha' %}selected{% endif %}>ChaCha</option>
-            </select>
-
-            <div class="checkbox-wrapper">
-                <input type="checkbox" id="change-pin-toggle" onchange="togglePin()"> 
-                <label for="change-pin-toggle">Change PIN</label>
+            <input type="password" name="pin" id="pin" placeholder="Enter 4-digit PIN" minlength="4" maxlength="6" required>
+            <div class="show-pin">
+                <input type="checkbox" onclick="togglePin()"> Show PIN
             </div>
-
-            <div id="pin-field" style="display: none;">
-                <label for="pin">New 4-digit PIN:</label>
-                <input id="pin" type="password" name="pin" minlength="4" maxlength="6">
-            </div>
-
-            <button type="submit">Save Changes</button>
+            <button type="submit">Verify PIN</button>
         </form>
     </div>
 
-    <a class="back-link" href="{{ url_for('notes.dashboard') }}">← Back to Dashboard</a>
-
     <script>
         function togglePin() {
-            const pinField = document.getElementById("pin-field");
-            pinField.style.display = pinField.style.display === "none" ? "block" : "none";
+            var x = document.getElementById("pin");
+            x.type = x.type === "password" ? "text" : "password";
         }
     </script>
+
 </body>
 </html>
