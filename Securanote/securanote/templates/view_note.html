@@ -1,139 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SecuraNote – View Note</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SecuraNote - View Note</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-    @keyframes ripple { 0% { box-shadow: 0 0 0 0 rgba(37,99,235,0.4); } 100% { box-shadow: 0 0 0 20px rgba(37,99,235,0); } }
-
-    body { background: linear-gradient(135deg,#1e40af,#3b82f6); min-height:100vh; animation: fadeIn .8s ease-out; }
-    .note-container { background: rgba(255,255,255,0.95); box-shadow: 0 8px 32px rgba(0,0,0,0.2); border-radius: 1rem; animation: fadeIn .6s ease-out; }
-    .btn-primary { background: linear-gradient(135deg, #1e40af, #3b82f6); transition: all 0.3s ease; }
-    .btn-primary:hover { background: linear-gradient(135deg, #1e3a8a, #2563eb); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
-    .btn-secondary { background: linear-gradient(135deg, #3b82f6, #60a5fa); transition: all 0.3s ease; }
-    .btn-secondary:hover { background: linear-gradient(135deg, #2563eb, #3b82f6); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
-    .note-content { max-height: 400px; overflow-y: auto; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    body {
+      background: linear-gradient(135deg, #1e40af, #3b82f6);
+      min-height: 100vh;
+      animation: fadeIn 0.8s ease-out;
+    }
+    .note-container {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border-radius: 16px;
+      animation: fadeIn 0.6s ease-out;
+    }
   </style>
 </head>
 <body class="p-4 md:p-6 font-sans text-gray-800">
-
   <div class="max-w-3xl mx-auto note-container p-6 md:p-8">
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl md:text-3xl font-bold text-blue-700">View Note</h1>
-      <a href="{{ url_for('notes.dashboard') }}" class="btn-secondary px-4 py-2 rounded-lg text-white flex items-center">
-        ← Back
-      </a>
-    </div>
-
-    <h2 class="text-xl font-semibold text-blue-700 border-b pb-2">{{ note.title }}</h2>
-
-    <div class="note-content bg-blue-50 p-4 mt-4 rounded-lg border border-blue-200 text-gray-700 whitespace-pre-wrap">
-      {{ decrypted }}
+    <h2 class="text-2xl font-bold text-blue-700">{{ note.title }}</h2>
+    <div class="note-content bg-blue-50 p-4 rounded-lg border border-blue-100 mt-4">
+      <p>{{ decrypted }}</p>
     </div>
 
     {% if note.file_path %}
       <div class="mt-6">
+        <h5 class="text-lg font-semibold text-blue-700">Attached File:</h5>
         {% set ext = note.file_path.rsplit('.', 1)[-1].lower() %}
+
         {% if ext in ['png', 'jpg', 'jpeg', 'gif'] %}
-          <img src="{{ file_url }}" class="rounded shadow max-w-xs">
+          <img src="{{ file_url }}" width="300" class="mt-2 rounded-lg shadow-md">
         {% elif ext == 'mp3' %}
-          <audio controls class="mt-2 w-full">
+          <audio controls class="mt-2">
             <source src="{{ file_url }}" type="audio/mpeg">
+            Your browser does not support the audio element.
           </audio>
-        {% elif ext in ['mp4', 'webm', 'ogg'] %}
-          <video controls class="mt-2 w-full rounded shadow">
+        {% elif ext in ['mp4', 'webm', 'ogg'] and file_url %}
+          <video width="640" height="360" controls class="mt-2">
             <source src="{{ file_url }}" type="video/{{ file_ext }}">
+            Your browser does not support the video tag.
           </video>
         {% else %}
-          <a href="{{ url_for('notes.view_file', filename=note.file_path) }}" class="text-blue-600 hover:underline mt-2 block">Download File</a>
+          <a href="{{ url_for('notes.view_file', filename=note.file_path) }}" target="_blank" class="text-blue-600 underline">Download File</a>
         {% endif %}
       </div>
     {% endif %}
 
-    <!-- PDF download form -->
-    <form method="POST" action="{{ url_for('notes.export_pdf') }}" class="mt-6">
+    <form action="{{ url_for('notes.export_pdf') }}" method="POST" class="mt-6">
       <input type="hidden" name="title" value="{{ note.title }}">
       <textarea name="content" style="display:none;">{{ decrypted }}</textarea>
       {% if note.file_path %}
         <input type="hidden" name="file_path" value="{{ note.file_path }}">
       {% endif %}
-      <button type="submit" class="btn-primary text-white px-4 py-2 rounded-lg flex items-center">
-        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-        Download as PDF
-      </button>
+      <button type="submit" class="btn-primary px-4 py-2 rounded-lg text-white font-medium">Download as PDF</button>
     </form>
 
-    <!-- Share Section -->
-    <div class="mt-10 border-t pt-6 border-blue-200">
-      <form method="POST">
-        <label class="flex items-center gap-2 mb-4">
-          <input type="checkbox" name="view_once" id="view_once" class="h-4 w-4 rounded text-blue-600">
-          <span>View once only</span>
+    <div class="mt-10">
+      <h3 class="text-lg font-semibold text-blue-700">🔗 Share this note</h3>
+      <form method="POST" class="mt-2">
+        <label class="flex items-center space-x-2">
+          <input type="checkbox" name="view_once" id="view_once" class="rounded text-blue-500">
+          <span>View once</span>
         </label>
-        <button type="submit" name="generate_link" class="btn-primary text-white px-4 py-2 rounded ripple-effect">
-          Generate Secure Link
-        </button>
+        <button type="submit" name="generate_link" class="btn-primary mt-4 px-4 py-2 rounded-lg text-white font-medium">Generate Link</button>
       </form>
 
       {% if share_link %}
-        <div class="mt-6 space-y-4">
-          <div class="flex items-center bg-blue-50 border border-blue-200 rounded-lg p-3">
-            <input type="text" class="flex-grow bg-transparent text-sm focus:outline-none" value="{{ share_link }}" readonly onclick="this.select();">
+        <div class="mt-4 bg-blue-50 p-4 rounded-lg border border-blue-100">
+          <p class="font-semibold">Shareable Link:</p>
+          <input type="text" class="w-full mt-1 p-2 rounded border border-blue-300" value="{{ share_link }}" readonly onclick="this.select();">
+
+          <div class="flex gap-2 mt-3">
+            <a href="https://wa.me/?text={{ share_link | urlencode }}" target="_blank" class="btn-secondary px-3 py-1 text-white rounded">WhatsApp</a>
+            <a href="https://t.me/share/url?url={{ share_link | urlencode }}" target="_blank" class="btn-primary px-3 py-1 text-white rounded">Telegram</a>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=&su=Note Shared from Securanote&body={{ share_link | urlencode }}" target="_blank" class="btn-dark px-3 py-1 text-white rounded">Gmail</a>
           </div>
-
-          <div class="flex gap-6 flex-wrap">
-            <!-- WhatsApp -->
-            <a href="https://wa.me/?text={{ share_link | urlencode }}" target="_blank" class="share-option flex flex-col items-center">
-              <div class="bg-green-500 text-white p-3 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.472-.148-.672.15-.198.297-.768.966-.941 1.164-.173.198-.347.223-.644.075-.297-.15-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.447-.52.15-.173.2-.297.3-.495.099-.198.05-.372-.025-.52-.075-.149-.672-1.612-.921-2.214-.242-.579-.487-.501-.672-.51l-.573-.01c-.198 0-.52.074-.792.372s-1.04 1.017-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.007-1.412.248-.694.248-1.288.173-1.412-.074-.123-.272-.198-.57-.347z"/>
-                </svg>
-              </div>
-              <span class="text-sm mt-1">WhatsApp</span>
-            </a>
-
-            <!-- Telegram -->
-            <a href="https://t.me/share/url?url={{ share_link | urlencode }}" target="_blank" class="share-option flex flex-col items-center">
-              <div class="bg-blue-500 text-white p-3 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M9.036 16.507l-.374 3.92c.534 0 .767-.229 1.05-.505l2.526-2.407 5.243 3.836c.962.531 1.654.252 1.904-.889L23.94 4.42c.33-1.37-.489-1.908-1.376-1.58L1.525 10.623c-1.338.52-1.32 1.263-.229 1.6l5.793 1.81L19.6 6.43c.59-.363 1.132-.162.688.2L9.036 16.507z"/>
-                </svg>
-              </div>
-              <span class="text-sm mt-1">Telegram</span>
-            </a>
-
-            <!-- Email -->
-            <a href="mailto:?subject=Note Shared from Securanote&body={{ share_link | urlencode }}" class="share-option flex flex-col items-center">
-              <div class="bg-red-500 text-white p-3 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M2 4a2 2 0 012-2h16a2 2 0 012 2v1.2l-10 6.6L2 5.2V4zm0 3.78l8.08 5.33a2 2 0 002.14 0L22 7.78V20a2 2 0 01-2 2H4a2 2 0 01-2-2V7.78z"/>
-                </svg>
-              </div>
-              <span class="text-sm mt-1">Email</span>
-            </a>
-          </div>
-
-          <!-- QR Code -->
-          {% if qr_code_base64 %}
-            <div class="mt-4">
-              <h3 class="text-sm font-medium text-gray-700 mb-2">QR Code</h3>
-              <img src="data:image/png;base64,{{ qr_code_base64 }}" class="bg-white p-2 rounded shadow-md" style="max-width: 200px;" alt="QR Code">
-              <div class="mt-2">
-                <a href="data:image/png;base64,{{ qr_code_base64 }}" download="qr_code.png" class="text-blue-600 hover:underline text-sm">Download QR Code</a>
-              </div>
-            </div>
-          {% endif %}
         </div>
       {% endif %}
     </div>
+
+    {% if qr_code_base64 %}
+      <div class="mt-6">
+        <p class="font-semibold">QR Code:</p>
+        <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="QR Code" class="max-w-xs mt-2">
+        <div class="flex gap-2 mt-3">
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=&su=QR%20Code%20for%20Your%20Note&body=Hi,%0A%0AHere%20is%20the%20QR%20code%20for%20accessing%20my%20note:%0A{{ qr_image_url | urlencode }}%0A%0AScan%20it%20to%20view%20the%20note.%0A" target="_blank" class="btn-dark px-3 py-1 text-white rounded">Share QR via Gmail</a>
+          <a href="data:image/png;base64,{{ qr_code_base64 }}" download="qr_code.png" class="btn-secondary px-3 py-1 text-white rounded">Download QR Code</a>
+        </div>
+        <p class="text-sm text-gray-600 mt-2">To share via WhatsApp or Telegram, download and upload the QR image manually.</p>
+      </div>
+    {% endif %}
+
+    <p class="mt-10 text-blue-800">
+      <a href="{{ url_for('notes.dashboard') }}" class="underline">Back to Dashboard</a>
+    </p>
   </div>
 </body>
 </html>
