@@ -74,13 +74,12 @@
     .container {
       background-color: white;
       width: 100%;
-      max-width: 400px;
+      max-width: 380px;
       padding: 40px 30px;
-      border-radius: 15px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+      border-radius: 20px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.1);
       text-align: center;
       animation: fadeInUp 0.8s ease-out;
-      transition: background 0.3s ease, color 0.3s ease;
     }
 
     body.dark .container {
@@ -160,17 +159,18 @@
 
     .form-group input:focus + label,
     .form-group input:not(:placeholder-shown) + label {
-      top: -10px;
+      top: -8px;
       left: 10px;
       background-color: white;
-      padding: 0 5px;
+      padding: 0 6px;
       font-size: 12px;
-      color: #6c63ff;
+      color: #7f5af0;
     }
 
     body.dark .form-group input:focus + label,
     body.dark .form-group input:not(:placeholder-shown) + label {
       background-color: #2b2b38;
+      color: #a58bff;
     }
 
     .remember-forgot {
@@ -193,7 +193,7 @@
     .submit-btn {
       width: 100%;
       padding: 12px;
-      background-color: #6c63ff;
+      background: linear-gradient(135deg, #7f5af0, #5f4dee);
       color: white;
       border: none;
       font-size: 15px;
@@ -202,6 +202,10 @@
       cursor: pointer;
       margin-top: 20px;
       transition: background 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #6b4dd3, #503ec3);
     }
 
     .footer-link {
@@ -232,13 +236,17 @@
     .social-icons i {
       font-size: 20px;
       color: #444;
-      transition: transform 0.3s ease;
+      border: 1px solid #ccc;
+      border-radius: 50%;
+      padding: 10px;
+      transition: all 0.3s ease;
       cursor: pointer;
     }
 
     .social-icons i:hover {
-      transform: scale(1.2);
-      color: #6c63ff;
+      transform: scale(1.1);
+      background: #f0f0f0;
+      color: #7f5af0;
     }
 
     .message-error { color: red; font-size: 14px; }
@@ -271,7 +279,7 @@
 <div class="custom-cursor" id="cursor"></div>
 
 <!-- Main Container -->
-<div class="container animate__animated animate__fadeIn">
+<div class="container">
   <h2>Welcome Back</h2>
   <p>Sign in to continue to your account</p>
 
@@ -305,7 +313,10 @@
       <a href="{{ url_for('auth.forgot_password') }}">Forgot Password?</a>
     </div>
 
-    <label>{{ form.remember() }} Remember Me</label>
+    <label style="font-size: 13px; display: block; margin-top: 10px;">
+      {{ form.remember() }} Remember Me
+    </label>
+
     <input type="submit" class="submit-btn" value="Sign In" id="submitBtn">
   </form>
 
@@ -338,18 +349,31 @@
     cursor.style.top = `${e.clientY}px`;
   });
 
-  // Toggle Password
+  // Toggle Password Visibility
   function togglePassword() {
     const pwd = document.getElementById("password");
     pwd.type = pwd.type === "password" ? "text" : "password";
   }
 
-  // Theme Toggle
+  // Theme Toggle with Local Storage
   function toggleTheme() {
     document.body.classList.toggle("dark");
+    const isDark = document.body.classList.contains("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
   }
 
-  // Audio + Progress Loader
+  // Load saved theme on page load
+  function checkSavedTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark");
+    }
+  }
+
+  // Call on page load
+  checkSavedTheme();
+
+  // Login Sound + Progress Bar
   function playFeedback() {
     const audio = document.getElementById("loginSound");
     const progress = document.getElementById("progress");
@@ -359,7 +383,7 @@
 
     setTimeout(() => {
       progress.style.width = "0%";
-    }, 2000); // Simulated loading time
+    }, 2000);
 
     return true;
   }
