@@ -1,650 +1,113 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecuraNote - View Note</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(-20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        
-        body {
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            min-height: 100vh;
-            animation: fadeIn 0.8s ease-out;
-        }
-        
-        .note-container {
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            border-radius: 16px;
-            animation: fadeIn 0.6s ease-out;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #1e3a8a, #2563eb);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(135deg, #3b82f6, #60a5fa);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-secondary:hover {
-            background: linear-gradient(135deg, #2563eb, #3b82f6);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #059669, #10b981);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-success:hover {
-            background: linear-gradient(135deg, #047857, #059669);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-        }
-        
-        .btn-dark {
-            background: linear-gradient(135deg, #1f2937, #374151);
-            transition: all 0.3s ease;
-            color: white;
-        }
-        
-        .btn-dark:hover {
-            background: linear-gradient(135deg, #111827, #1f2937);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(31, 41, 55, 0.3);
-        }
-        
-        .share-option {
-            transition: all 0.3s ease;
-        }
-        
-        .share-option:hover {
-            transform: translateY(-5px);
-            filter: brightness(1.1);
-        }
-        
-        .note-content {
-            min-height: 200px;
-            max-height: 400px;
-            overflow-y: auto;
-            animation: fadeIn 0.8s ease-out;
-        }
-        
-        .link-container {
-            background-color: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 0.5rem;
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        h1, h2 {
-            animation: slideIn 0.6s ease-out;
-        }
-        
-        #downloadPdfBtn {
-            animation: pulse 2s infinite;
-        }
-        
-        #shareNoteBtn:hover svg {
-            animation: bounce 0.6s infinite;
-        }
-        
-        #generatedLinkSection {
-            animation: fadeIn 0.8s ease-out;
-        }
-        
-        .animate-list li {
-            animation: slideIn 0.5s ease-out;
-            animation-fill-mode: both;
-        }
-        
-        .animate-list li:nth-child(1) { animation-delay: 0.1s; }
-        .animate-list li:nth-child(2) { animation-delay: 0.2s; }
-        .animate-list li:nth-child(3) { animation-delay: 0.3s; }
-        .animate-list li:nth-child(4) { animation-delay: 0.4s; }
-        
-        @keyframes ripple {
-            0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
-            100% { box-shadow: 0 0 0 20px rgba(37, 99, 235, 0); }
-        }
-        
-        .ripple-effect {
-            animation: ripple 1.5s infinite;
-        }
-        
-        .file-preview {
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-top: 1rem;
-            background-color: #f9fafb;
-        }
-        
-        .divider {
-            height: 1px;
-            width: 100%;
-            background-color: #e5e7eb;
-            margin: 1.5rem 0;
-        }
-    </style>
-</head>
-<body class="p-4 md:p-6 font-sans text-gray-800">
-    <div class="max-w-3xl mx-auto note-container p-6 md:p-8">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl md:text-3xl font-bold text-blue-700">View Note</h1>
-            <a href="#" id="backBtn" class="btn-secondary px-4 py-2 rounded-lg text-white font-medium flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Back to Dashboard
-            </a>
-        </div>
+<!-- Inside your Jinja2 Flask Template -->
+<div class="max-w-3xl mx-auto note-container p-6 md:p-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl md:text-3xl font-bold text-blue-700">View Note</h1>
+    <a href="{{ url_for('notes.dashboard') }}" class="btn-secondary px-4 py-2 rounded-lg text-white font-medium flex items-center">
+      <!-- Back Icon -->
+      <svg class="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to Dashboard
+    </a>
+  </div>
 
-        <div class="space-y-6">
-            <!-- Note Title -->
-            <div>
-                <h2 id="noteTitle" class="text-xl font-semibold text-blue-700 pb-2 border-b border-blue-200">Project Meeting Notes</h2>
-            </div>
+  <!-- Note Title & Content -->
+  <div>
+    <h2 class="text-xl font-semibold text-blue-700 pb-2 border-b border-blue-200">{{ note.title }}</h2>
+  </div>
 
-            <!-- Note Content -->
-            <!-- Note Title -->
-            <div>
-              <h2 id="noteTitle" class="text-xl font-semibold text-blue-700 pb-2 border-b border-blue-200"></h2>
-           </div>
+  <div class="note-content bg-blue-50 p-4 rounded-lg border border-blue-100 mt-4">
+    <p>{{ decrypted }}</p>
+  </div>
 
-           <!-- Note Content -->
-           <div id="noteContent" class="note-content bg-blue-50 p-4 rounded-lg border border-blue-100"></div>
+  <!-- Attached File -->
+  {% if note.file_path %}
+    <div class="mt-4">
+      <h5 class="font-medium">Attached File:</h5>
+      {% set ext = note.file_path.rsplit('.', 1)[-1].lower() %}
+      {% if ext in ['png', 'jpg', 'jpeg', 'gif'] %}
+        <img src="{{ file_url }}" width="300" class="rounded-lg shadow">
+      {% elif ext == 'mp3' %}
+        <audio controls><source src="{{ file_url }}" type="audio/mpeg"></audio>
+      {% elif ext in ['mp4', 'webm', 'ogg'] %}
+        <video controls width="640" class="rounded-lg">
+          <source src="{{ file_url }}" type="video/{{ ext }}">
+        </video>
+      {% else %}
+        <a href="{{ url_for('notes.view_file', filename=note.file_path) }}" target="_blank" class="text-blue-600 underline">Download File</a>
+      {% endif %}
+    </div>
+  {% endif %}
 
-            <!-- File Attachment Section (conditionally shown) -->
-            <div id="fileAttachmentSection" class="file-preview">
-                <h5 class="font-medium text-gray-700 mb-3">Attached File:</h5>
-                
-                <!-- Image Preview (shown for image files) -->
-                <div id="imagePreview" class="hidden">
-                    <img id="attachedImage" src="" alt="Attached Image" class="max-w-full h-auto rounded-lg shadow-sm" style="max-height: 300px;">
-                </div>
-                
-                <!-- Audio Preview (shown for audio files) -->
-                <div id="audioPreview" class="hidden">
-                    <audio id="attachedAudio" controls class="w-full">
-                        <source src="" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
-                </div>
-                
-                <!-- Video Preview (shown for video files) -->
-                <div id="videoPreview" class="hidden">
-                    <video id="attachedVideo" width="100%" height="auto" controls class="rounded-lg">
-                        <source src="" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-                
-                <!-- File Download (shown for other file types) -->
-                <div id="fileDownload" class="hidden">
-                    <a id="fileDownloadLink" href="#" target="_blank" class="btn-secondary px-4 py-2 rounded-lg text-white font-medium inline-flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Download File
-                    </a>
-                </div>
-            </div>
+  <!-- Download as PDF -->
+  <form method="POST" action="{{ url_for('notes.export_pdf') }}" class="mt-6">
+    <input type="hidden" name="title" value="{{ note.title }}">
+    <textarea name="content" class="hidden">{{ decrypted }}</textarea>
+    {% if note.file_path %}
+      <input type="hidden" name="file_path" value="{{ note.file_path }}">
+    {% endif %}
+    <button type="submit" class="btn-primary px-4 py-2 rounded-lg text-white font-medium flex items-center ripple-effect">
+      <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      Download as PDF
+    </button>
+  </form>
 
-            <div class="divider"></div>
+  <!-- Share Button -->
+  <div class="mt-6 border-t pt-6">
+    <button id="toggleShareOptions" class="text-blue-600 font-medium flex items-center hover:text-blue-800 transition">
+      <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342A3 3 0 119 12a3 3 0 01-.316 1.342l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+      </svg>
+      Share this note
+    </button>
 
-            <!-- Download as PDF Button -->
-            <form id="pdfForm" class="flex justify-end">
-                <input type="hidden" id="pdfTitle" name="title" value="Project Meeting Notes">
-                <textarea id="pdfContent" name="content" style="display:none;">Sample content for PDF export</textarea>
-                <input type="hidden" id="pdfFilePath" name="file_path" value="">
-                <button type="submit" id="downloadPdfBtn" class="btn-primary px-4 py-2 rounded-lg text-white font-medium flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Download as PDF
-                </button>
-            </form>
-
-            <div class="divider"></div>
-
-            <!-- Share Note Section -->
-            <div>
-                <h3 class="text-lg font-semibold text-blue-700 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                    </svg>
-                    <h3 id="shareToggleBtn" class="text-lg font-semibold mb-2 text-gray-800 cursor-pointer hover:text-blue-600 transition duration-200">Share this note</h3>
-                </h3>
-                <div id="shareControls" class="hidden">
-                    <form id="shareForm" class="mt-4">
-                        <div class="flex items-center space-x-2 mb-4">
-                            <input type="checkbox" id="viewOnceCheckbox" name="view_once" class="rounded text-blue-500 focus:ring-blue-500 h-4 w-4">
-                            <label for="viewOnceCheckbox" class="text-sm text-gray-700">View once only (link expires after first view)</label>
-                        </div>
-                    
-                    <button type="submit" id="generateLinkBtn" name="generate_link" class="btn-success px-4 py-2 rounded-lg text-white font-medium ripple-effect">Generate Secure Link</button>
-                    </form>
-                </div>
-                <!-- Generated Link Section (Hidden initially) -->
-                <div id="generatedLinkSection" class="hidden mt-4 space-y-4">
-                    <div class="link-container p-3 flex items-center">
-                        <input type="text" id="generatedLink" class="flex-grow bg-transparent border-none focus:outline-none focus:ring-0 text-sm" value="https://securanote.app/share/n0t3-1d3nt1f13r-h3r3" readonly>
-                        <button id="copyLinkBtn" class="ml-2 p-1 rounded-full hover:bg-blue-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                            </svg>
-                        </button>
-                    </div>
-                    
-                    <!-- Share via options -->
-                    <div class="flex flex-wrap gap-4 mb-6">
-                        <a href="#" id="shareWhatsApp" class="share-option flex flex-col items-center">
-                            <div class="bg-green-500 text-white p-3 rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                                </svg>
-                            </div>
-                            <span class="text-sm mt-1">WhatsApp</span>
-                        </a>
-                        <a href="#" id="shareTelegram" class="share-option flex flex-col items-center">
-                            <div class="bg-blue-500 text-white p-3 rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm-2 14.5v-9l7 4.5-7 4.5z"/>
-                                </svg>
-                            </div>
-                            <span class="text-sm mt-1">Telegram</span>
-                        </a>
-                        <a href="#" id="shareGmail" class="share-option flex flex-col items-center">
-                            <div class="bg-red-500 text-white p-3 rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z"/>
-                                </svg>
-                            </div>
-                            <span class="text-sm mt-1">Gmail</span>
-                        </a>
-                    </div>
-                    
-                    <!-- QR Code -->
-                    <div id="qrCodeSection" class="mb-4">
-                        <h3 class="text-sm font-medium text-gray-700 mb-2">QR Code:</h3>
-                        <div class="flex items-center space-x-4">
-                            <div id="qrcode" class="bg-white p-2 rounded-lg shadow-md"></div>
-                            <div class="flex flex-col space-y-2">
-                                <button id="downloadQrBtn" class="btn-secondary px-3 py-1 rounded-lg text-white font-medium text-sm flex items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                    </svg>
-                                    Download QR
-                                </button>
-                                <button id="shareQrBtn" class="btn-dark px-3 py-1 rounded-lg text-white font-medium text-sm flex items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                                    </svg>
-                                    Share QR
-                                </button>
-                            </div>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-2">To share via WhatsApp or Telegram, download the QR image and upload it manually.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- View Once + Generate -->
+    <div id="shareOptions" class="mt-4 hidden animate-fadeIn">
+      <form method="POST">
+        <label class="flex items-center space-x-2 mb-4">
+          <input type="checkbox" name="view_once" class="rounded text-blue-500 h-4 w-4">
+          <span>View once only</span>
+        </label>
+        <button type="submit" name="generate_link" class="btn-primary px-4 py-2 rounded-lg text-white font-medium ripple-effect">
+          Generate Secure Link
+        </button>
+      </form>
     </div>
 
-    <!-- Success Toast Notification -->
-    <div id="toastNotification" class="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 flex items-center hidden transform transition-all duration-500 translate-y-10 opacity-0">
-        <div class="bg-green-100 p-2 rounded-full mr-3">
-            <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
+    {% if share_link %}
+    <!-- Secure Link, Sharing, QR -->
+    <div class="mt-6 space-y-4" id="generatedLinkSection">
+      <div class="link-container flex items-center p-3">
+        <input type="text" readonly value="{{ share_link }}" class="flex-grow bg-transparent border-none text-sm focus:outline-none">
+        <button onclick="navigator.clipboard.writeText('{{ share_link }}')" class="ml-2 text-blue-600 hover:text-blue-800">
+          📋
+        </button>
+      </div>
+
+      <div class="flex gap-4 flex-wrap">
+        <a href="https://wa.me/?text={{ share_link | urlencode }}" target="_blank" class="share-option bg-green-500 text-white px-4 py-2 rounded-lg">WhatsApp</a>
+        <a href="https://t.me/share/url?url={{ share_link | urlencode }}" target="_blank" class="share-option bg-blue-500 text-white px-4 py-2 rounded-lg">Telegram</a>
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=&su=Note Shared from Securanote&body={{ share_link | urlencode }}" target="_blank" class="share-option bg-red-500 text-white px-4 py-2 rounded-lg">Email</a>
+      </div>
+
+      {% if qr_code_base64 %}
+      <div>
+        <h3 class="text-sm font-medium text-gray-700 mb-2">QR Code</h3>
+        <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="QR Code" class="rounded-lg shadow-md" style="max-width: 150px;">
+        <div class="mt-2">
+          <a href="data:image/png;base64,{{ qr_code_base64 }}" download="qr_code.png" class="btn-secondary px-3 py-1 mt-2 inline-block text-white rounded-lg">Download QR</a>
         </div>
-        <div>
-            <p id="toastMessage" class="font-medium">Action completed successfully!</p>
-        </div>
+      </div>
+      {% endif %}
     </div>
+    {% endif %}
+  </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Demo data - in a real app, this would come from the server
-            // Fetch file attachment data dynamically (assumes it's provided server-side or set elsewhere)
-            const noteData = {
-              title: document.getElementById('noteTitle').textContent,
-              content: document.getElementById('noteContent').innerHTML,
-              file_path: document.getElementById('pdfFilePath').value,
-              file_url: document.getElementById('attachedImage').src || document.getElementById('attachedAudio').querySelector('source').src || document.getElementById('attachedVideo').querySelector('source').src,
-              file_ext: (function() {
-                const path = document.getElementById('pdfFilePath').value;
-                return path ? path.split('.').pop().toLowerCase() : '';
-              })()
-            };
-
-          // Initialize only if file path exists
-            if (noteData.file_path) {
-              initializeNotePage(noteData);
-            } else {
-              document.getElementById('fileAttachmentSection').classList.add('hidden');
-            }
-
-            
-            // Show toast notification function
-            function showToast(message, duration = 3000) {
-                const toast = document.getElementById('toastNotification');
-                const toastMessage = document.getElementById('toastMessage');
-                
-                toastMessage.textContent = message;
-                toast.classList.remove('hidden', 'translate-y-10', 'opacity-0');
-                
-                setTimeout(() => {
-                    toast.classList.add('translate-y-10', 'opacity-0');
-                    setTimeout(() => {
-                        toast.classList.add('hidden');
-                    }, 500);
-                }, duration);
-            }
-            
-            // Initialize the page with note data
-            function initializeNotePage(noteData) {
-                // Set note title and content
-                document.getElementById('noteTitle').textContent = noteData.title;
-                document.getElementById('noteContent').innerHTML = noteData.content;
-                
-                // Set PDF form values
-                document.getElementById('pdfTitle').value = noteData.title;
-                document.getElementById('pdfContent').value = noteData.content.replace(/<[^>]*>/g, ''); // Strip HTML tags
-                
-                // Handle file attachment if present
-                if (noteData.file_path) {
-                    document.getElementById('fileAttachmentSection').classList.remove('hidden');
-                    document.getElementById('pdfFilePath').value = noteData.file_path;
-                    
-                    const fileExt = noteData.file_ext.toLowerCase();
-                    
-                    // Show appropriate file preview based on file type
-                    if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExt)) {
-                        document.getElementById('imagePreview').classList.remove('hidden');
-                        document.getElementById('attachedImage').src = noteData.file_url;
-                    } 
-                    else if (fileExt === 'mp3') {
-                        document.getElementById('audioPreview').classList.remove('hidden');
-                        document.getElementById('attachedAudio').querySelector('source').src = noteData.file_url;
-                        document.getElementById('attachedAudio').load();
-                    } 
-                    else if (['mp4', 'webm', 'ogg'].includes(fileExt)) {
-                        document.getElementById('videoPreview').classList.remove('hidden');
-                        document.getElementById('attachedVideo').querySelector('source').src = noteData.file_url;
-                        document.getElementById('attachedVideo').querySelector('source').type = `video/${fileExt}`;
-                        document.getElementById('attachedVideo').load();
-                    } 
-                    else {
-                        document.getElementById('fileDownload').classList.remove('hidden');
-                        document.getElementById('fileDownloadLink').href = noteData.file_url;
-                        document.getElementById('fileDownloadLink').download = noteData.file_path.split('/').pop();
-                    }
-                } else {
-                    document.getElementById('fileAttachmentSection').classList.add('hidden');
-                }
-            }
-
-            // Share Note functionality
-            const shareForm = document.getElementById('shareForm');
-            const generateLinkBtn = document.getElementById('generateLinkBtn');
-            const generatedLinkSection = document.getElementById('generatedLinkSection');
-            const copyLinkBtn = document.getElementById('copyLinkBtn');
-            const viewOnceCheckbox = document.getElementById('viewOnceCheckbox');
-
-            shareForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Add loading animation
-                generateLinkBtn.innerHTML = '<span class="inline-block animate-spin mr-2">↻</span> Generating...';
-                generateLinkBtn.disabled = true;
-                
-                // Simulate link generation delay
-                setTimeout(() => {
-                    // In a real app, you would generate a secure link here
-                    generatedLinkSection.classList.remove('hidden');
-                    
-                    // Reset button
-                    generateLinkBtn.innerHTML = 'Generate Secure Link';
-                    generateLinkBtn.disabled = false;
-                    
-                    // Generate QR code with animation
-                    document.getElementById("qrcode").innerHTML = '';
-                    const qrcode = new QRCode(document.getElementById("qrcode"), {
-                        text: document.getElementById('generatedLink').value,
-                        width: 128,
-                        height: 128,
-                        colorDark: "#000000", // Black QR code
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.H
-                    });
-                    
-                    // Show success message
-                    const viewOnceText = viewOnceCheckbox.checked ? " (view once)" : "";
-                    showToast(`Secure link${viewOnceText} generated successfully!`);
-                    
-                    // Update sharing links
-                    updateSharingLinks(document.getElementById('generatedLink').value);
-                }, 1000);
-            });
-            
-            // Update sharing links with the generated URL
-            function updateSharingLinks(shareUrl) {
-                const encodedUrl = encodeURIComponent(shareUrl);
-                
-                // WhatsApp sharing
-                document.getElementById('shareWhatsApp').href = `https://wa.me/?text=${encodedUrl}`;
-                
-                // Telegram sharing
-                document.getElementById('shareTelegram').href = `https://t.me/share/url?url=${encodedUrl}`;
-                
-                // Gmail sharing
-                document.getElementById('shareGmail').href = `https://mail.google.com/mail/?view=cm&fs=1&to=&su=Note Shared from Securanote&body=${encodedUrl}`;
-            }
-
-            copyLinkBtn.addEventListener('click', function() {
-                const linkInput = document.getElementById('generatedLink');
-                linkInput.select();
-                document.execCommand('copy');
-                
-                // Show feedback
-                const originalSVG = copyLinkBtn.innerHTML;
-                copyLinkBtn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                `;
-                
-                showToast("Link copied to clipboard!");
-                
-                setTimeout(() => {
-                    copyLinkBtn.innerHTML = originalSVG;
-                }, 2000);
-            });
-
-            // Download PDF functionality
-            const pdfForm = document.getElementById('pdfForm');
-            const downloadPdfBtn = document.getElementById('downloadPdfBtn');
-            
-            pdfForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Add loading animation
-                const originalContent = downloadPdfBtn.innerHTML;
-                downloadPdfBtn.innerHTML = '<span class="inline-block animate-spin mr-2">↻</span> Preparing PDF...';
-                downloadPdfBtn.disabled = true;
-                
-                // Simulate PDF generation delay
-                setTimeout(() => {
-                    // In a real app, you would generate a PDF here
-                    const { jsPDF } = window.jspdf;
-                    const doc = new jsPDF();
-                    
-                    const title = document.getElementById('pdfTitle').value;
-                    const content = document.getElementById('pdfContent').value;
-                    
-                    doc.setFontSize(16);
-                    doc.text(title, 20, 20);
-                    
-                    doc.setFontSize(12);
-                    doc.text(content, 20, 30, { maxWidth: 170 });
-                    
-                    doc.save("SecuraNote.pdf");
-                    
-                    // Reset button
-                    downloadPdfBtn.innerHTML = originalContent;
-                    downloadPdfBtn.disabled = false;
-                    
-                    showToast("PDF downloaded successfully!");
-                }, 1500);
-            });
-
-            // Download QR Code functionality
-            const downloadQrBtn = document.getElementById('downloadQrBtn');
-            downloadQrBtn.addEventListener('click', function() {
-                const qrCanvas = document.querySelector('#qrcode canvas');
-                if (qrCanvas) {
-                    const link = document.createElement('a');
-                    link.download = 'SecuraNote-QR.png';
-                    link.href = qrCanvas.toDataURL('image/png');
-                    link.click();
-                    
-                    showToast("QR code downloaded!");
-                }
-            });
-            
-            // Share QR Code functionality
-            const shareQrBtn = document.getElementById('shareQrBtn');
-            shareQrBtn.addEventListener('click', function() {
-                const qrCanvas = document.querySelector('#qrcode canvas');
-                if (qrCanvas) {
-                    if (navigator.share) {
-                        qrCanvas.toBlob(function(blob) {
-                            const file = new File([blob], "SecuraNote-QR.png", { type: "image/png" });
-                            
-                            navigator.share({
-                                title: 'Secure Note QR Code',
-                                text: 'Here is your QR code to access the note.',
-                                files: [file]
-                            }).catch((error) => {
-                                console.log('Share failed:', error);
-                                showToast("Sharing failed. Try downloading and sharing manually.");
-                            });
-                        });
-                    } else {
-                        showToast("Web Share API not supported. Download and share manually.");
-                    }
-                }
-            });
-
-            // Back button functionality
-            const backBtn = document.getElementById('backBtn');
-            backBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Add animation
-                document.querySelector('.note-container').style.animation = 'fadeIn 0.5s reverse forwards';
-                
-                // In a real app, this would navigate back to the dashboard
-                setTimeout(() => {
-                    showToast("Returning to dashboard...");
-                    // window.location.href = '/dashboard'; // In a real app
-                }, 300);
-            });
-
-            // Social sharing functionality with animations
-            const socialButtons = document.querySelectorAll('.share-option');
-            socialButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    // Add click animation
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 200);
-                });
-            });
-            
-            // Add animation to list items
-            const listItems = document.querySelectorAll('.animate-list li');
-            listItems.forEach((item, index) => {
-                item.style.animationDelay = `${0.1 * (index + 1)}s`;
-            });
-            
-            // Function to change file type for demo purposes
-            window.changeFileType = function(fileType) {
-                const demoData = {...noteData};
-                
-                switch(fileType) {
-                    case 'image':
-                        demoData.file_path = 'sample_image.jpg';
-                        demoData.file_url = 'https://images.unsplash.com/photo-1606857521015-7f9fcf423740?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80';
-                        demoData.file_ext = 'jpg';
-                        break;
-                    case 'audio':
-                        demoData.file_path = 'sample_audio.mp3';
-                        demoData.file_url = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
-                        demoData.file_ext = 'mp3';
-                        break;
-                    case 'video':
-                        demoData.file_path = 'sample_video.mp4';
-                        demoData.file_url = 'https://www.w3schools.com/html/mov_bbb.mp4';
-                        demoData.file_ext = 'mp4';
-                        break;
-                    case 'document':
-                        demoData.file_path = 'sample_document.pdf';
-                        demoData.file_url = '#';
-                        demoData.file_ext = 'pdf';
-                        break;
-                    case 'none':
-                        demoData.file_path = '';
-                        demoData.file_url = '';
-                        demoData.file_ext = '';
-                        break;
-                }
-                
-                // Reset all previews
-                document.getElementById('imagePreview').classList.add('hidden');
-                document.getElementById('audioPreview').classList.add('hidden');
-                document.getElementById('videoPreview').classList.add('hidden');
-                document.getElementById('fileDownload').classList.add('hidden');
-                
-                initializeNotePage(demoData);
-            };
-        });
-    </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'963a0620b7de8a2a',t:'MTc1MzI2MTYwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
+<script>
+  document.getElementById('toggleShareOptions').addEventListener('click', function () {
+    document.getElementById('shareOptions').classList.toggle('hidden');
+  });
+</script>
