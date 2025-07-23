@@ -258,18 +258,18 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                     </svg>
-                    Share this note
+                    <h3 id="shareToggleBtn" class="text-lg font-semibold mb-2 text-gray-800 cursor-pointer hover:text-blue-600 transition duration-200">Share this note</h3>
                 </h3>
-                
-                <form id="shareForm" class="mt-4">
-                    <div class="flex items-center space-x-2 mb-4">
-                        <input type="checkbox" id="viewOnceCheckbox" name="view_once" class="rounded text-blue-500 focus:ring-blue-500 h-4 w-4">
-                        <label for="viewOnceCheckbox" class="text-sm text-gray-700">View once only (link expires after first view)</label>
-                    </div>
+                <div id="shareControls" class="hidden">
+                    <form id="shareForm" class="mt-4">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <input type="checkbox" id="viewOnceCheckbox" name="view_once" class="rounded text-blue-500 focus:ring-blue-500 h-4 w-4">
+                            <label for="viewOnceCheckbox" class="text-sm text-gray-700">View once only (link expires after first view)</label>
+                        </div>
                     
                     <button type="submit" id="generateLinkBtn" name="generate_link" class="btn-success px-4 py-2 rounded-lg text-white font-medium ripple-effect">Generate Secure Link</button>
-                </form>
-                
+                    </form>
+                </div>
                 <!-- Generated Link Section (Hidden initially) -->
                 <div id="generatedLinkSection" class="hidden mt-4 space-y-4">
                     <div class="link-container p-3 flex items-center">
