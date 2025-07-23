@@ -1,113 +1,121 @@
-<!-- Inside your Jinja2 Flask Template -->
-<div class="max-w-3xl mx-auto note-container p-6 md:p-8">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl md:text-3xl font-bold text-blue-700">View Note</h1>
-    <a href="{{ url_for('notes.dashboard') }}" class="btn-secondary px-4 py-2 rounded-lg text-white font-medium flex items-center">
-      <!-- Back Icon -->
-      <svg class="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-      </svg>
-      Back to Dashboard
-    </a>
-  </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{ note.title }} - SecuraNote</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in-up { animation: fadeInUp 0.5s ease-out; }
+    .ripple:active::after {
+      content: "";
+      position: absolute;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(0);
+      animation: ripple-effect 0.6s linear;
+    }
+    @keyframes ripple-effect {
+      to { transform: scale(4); opacity: 0; }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-800 to-indigo-700 min-h-screen text-white p-6">
 
-  <!-- Note Title & Content -->
-  <div>
-    <h2 class="text-xl font-semibold text-blue-700 pb-2 border-b border-blue-200">{{ note.title }}</h2>
-  </div>
+  <div class="max-w-4xl mx-auto bg-white bg-opacity-10 backdrop-blur-md p-6 rounded-2xl shadow-lg space-y-6 fade-in-up">
 
-  <div class="note-content bg-blue-50 p-4 rounded-lg border border-blue-100 mt-4">
-    <p>{{ decrypted }}</p>
-  </div>
-
-  <!-- Attached File -->
-  {% if note.file_path %}
-    <div class="mt-4">
-      <h5 class="font-medium">Attached File:</h5>
-      {% set ext = note.file_path.rsplit('.', 1)[-1].lower() %}
-      {% if ext in ['png', 'jpg', 'jpeg', 'gif'] %}
-        <img src="{{ file_url }}" width="300" class="rounded-lg shadow">
-      {% elif ext == 'mp3' %}
-        <audio controls><source src="{{ file_url }}" type="audio/mpeg"></audio>
-      {% elif ext in ['mp4', 'webm', 'ogg'] %}
-        <video controls width="640" class="rounded-lg">
-          <source src="{{ file_url }}" type="video/{{ ext }}">
-        </video>
-      {% else %}
-        <a href="{{ url_for('notes.view_file', filename=note.file_path) }}" target="_blank" class="text-blue-600 underline">Download File</a>
-      {% endif %}
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-white">📓 {{ note.title }}</h1>
+      <a href="{{ url_for('notes.dashboard') }}" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition">⬅ Back</a>
     </div>
-  {% endif %}
 
-  <!-- Download as PDF -->
-  <form method="POST" action="{{ url_for('notes.export_pdf') }}" class="mt-6">
-    <input type="hidden" name="title" value="{{ note.title }}">
-    <textarea name="content" class="hidden">{{ decrypted }}</textarea>
+    <!-- Note Content -->
+    <div class="bg-white/10 p-4 rounded-xl text-white border border-white/20 max-h-64 overflow-y-auto">
+      <p>{{ decrypted }}</p>
+    </div>
+
+    <!-- Attached File -->
     {% if note.file_path %}
-      <input type="hidden" name="file_path" value="{{ note.file_path }}">
-    {% endif %}
-    <button type="submit" class="btn-primary px-4 py-2 rounded-lg text-white font-medium flex items-center ripple-effect">
-      <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-      Download as PDF
-    </button>
-  </form>
-
-  <!-- Share Button -->
-  <div class="mt-6 border-t pt-6">
-    <button id="toggleShareOptions" class="text-blue-600 font-medium flex items-center hover:text-blue-800 transition">
-      <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342A3 3 0 119 12a3 3 0 01-.316 1.342l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-      </svg>
-      Share this note
-    </button>
-
-    <!-- View Once + Generate -->
-    <div id="shareOptions" class="mt-4 hidden animate-fadeIn">
-      <form method="POST">
-        <label class="flex items-center space-x-2 mb-4">
-          <input type="checkbox" name="view_once" class="rounded text-blue-500 h-4 w-4">
-          <span>View once only</span>
-        </label>
-        <button type="submit" name="generate_link" class="btn-primary px-4 py-2 rounded-lg text-white font-medium ripple-effect">
-          Generate Secure Link
-        </button>
-      </form>
-    </div>
-
-    {% if share_link %}
-    <!-- Secure Link, Sharing, QR -->
-    <div class="mt-6 space-y-4" id="generatedLinkSection">
-      <div class="link-container flex items-center p-3">
-        <input type="text" readonly value="{{ share_link }}" class="flex-grow bg-transparent border-none text-sm focus:outline-none">
-        <button onclick="navigator.clipboard.writeText('{{ share_link }}')" class="ml-2 text-blue-600 hover:text-blue-800">
-          📋
-        </button>
-      </div>
-
-      <div class="flex gap-4 flex-wrap">
-        <a href="https://wa.me/?text={{ share_link | urlencode }}" target="_blank" class="share-option bg-green-500 text-white px-4 py-2 rounded-lg">WhatsApp</a>
-        <a href="https://t.me/share/url?url={{ share_link | urlencode }}" target="_blank" class="share-option bg-blue-500 text-white px-4 py-2 rounded-lg">Telegram</a>
-        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=&su=Note Shared from Securanote&body={{ share_link | urlencode }}" target="_blank" class="share-option bg-red-500 text-white px-4 py-2 rounded-lg">Email</a>
-      </div>
-
-      {% if qr_code_base64 %}
       <div>
-        <h3 class="text-sm font-medium text-gray-700 mb-2">QR Code</h3>
-        <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="QR Code" class="rounded-lg shadow-md" style="max-width: 150px;">
-        <div class="mt-2">
-          <a href="data:image/png;base64,{{ qr_code_base64 }}" download="qr_code.png" class="btn-secondary px-3 py-1 mt-2 inline-block text-white rounded-lg">Download QR</a>
-        </div>
+        <h2 class="font-semibold mb-2">📎 Attached File:</h2>
+        {% set ext = note.file_path.rsplit('.', 1)[-1].lower() %}
+        {% if ext in ['png', 'jpg', 'jpeg', 'gif'] %}
+          <img src="{{ file_url }}" alt="Image" class="w-full max-w-md rounded-lg shadow-lg" />
+        {% elif ext == 'mp3' %}
+          <audio controls class="mt-2 w-full">
+            <source src="{{ file_url }}" type="audio/mpeg" />
+          </audio>
+        {% elif ext in ['mp4', 'webm', 'ogg'] %}
+          <video controls class="mt-2 w-full rounded-lg">
+            <source src="{{ file_url }}" type="video/{{ ext }}">
+          </video>
+        {% else %}
+          <a href="{{ file_url }}" class="text-blue-200 underline" target="_blank">Download Attached File</a>
+        {% endif %}
       </div>
-      {% endif %}
-    </div>
     {% endif %}
-  </div>
-</div>
 
-<script>
-  document.getElementById('toggleShareOptions').addEventListener('click', function () {
-    document.getElementById('shareOptions').classList.toggle('hidden');
-  });
-</script>
+    <!-- PDF Export -->
+    <form method="POST" action="{{ url_for('notes.export_pdf') }}">
+      <input type="hidden" name="title" value="{{ note.title }}">
+      <textarea name="content" style="display: none;">{{ decrypted }}</textarea>
+      {% if note.file_path %}
+        <input type="hidden" name="file_path" value="{{ note.file_path }}">
+      {% endif %}
+      <button type="submit" class="relative bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg overflow-hidden ripple">
+        📄 Export to PDF
+      </button>
+    </form>
+
+    <!-- Share Section -->
+    <div class="mt-6">
+      <button id="toggleShare" class="text-white hover:text-gray-300 font-semibold">🔗 Share Note</button>
+      <div id="shareSection" class="mt-4 hidden space-y-4">
+
+        <!-- Generate Share Link -->
+        <form method="POST">
+          <label class="inline-flex items-center">
+            <input type="checkbox" name="view_once" class="form-checkbox text-indigo-600">
+            <span class="ml-2">Allow view only once</span>
+          </label><br>
+          <button type="submit" name="generate_link" class="mt-2 bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg ripple">
+            🔒 Generate Secure Link
+          </button>
+        </form>
+
+        {% if share_link %}
+          <!-- Share Link Box -->
+          <div class="bg-white/10 p-3 rounded-lg flex items-center justify-between border border-white/20">
+            <input type="text" value="{{ share_link }}" readonly class="bg-transparent w-full text-white focus:outline-none" onclick="this.select()">
+            <button onclick="navigator.clipboard.writeText('{{ share_link }}')" class="ml-2 text-blue-200 hover:text-white">📋</button>
+          </div>
+
+          <!-- Share Buttons -->
+          <div class="flex gap-3 flex-wrap">
+            <a href="https://wa.me/?text={{ share_link | urlencode }}" target="_blank" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition">WhatsApp</a>
+            <a href="https://t.me/share/url?url={{ share_link | urlencode }}" target="_blank" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition">Telegram</a>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&su=Shared%20Note&body={{ share_link | urlencode }}" target="_blank" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition">Gmail</a>
+          </div>
+
+          <!-- QR Code -->
+          {% if qr_code_base64 %}
+            <div class="mt-4">
+              <h3 class="text-sm font-semibold mb-2">📷 Scan QR</h3>
+              <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="QR Code" class="w-40 h-40 rounded-lg shadow-md">
+              <a href="data:image/png;base64,{{ qr_code_base64 }}" download="note_qr.png" class="text-blue-200 underline block mt-2">⬇ Download QR</a>
+            </div>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("toggleShare").addEventListener("click", function () {
+      document.getElementById("shareSection").classList.toggle("hidden");
+    });
+  </script>
+</body>
+</html>
