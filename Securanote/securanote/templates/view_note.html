@@ -1,118 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>SecuraNote - View Note</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>SecuraNote – View Note</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes pulse { 0%,100%{transform:scale(1);}50%{transform:scale(1.05);} }
+    @keyframes slideIn { from{transform:translateX(-20px);opacity:0;}to{transform:translateX(0);opacity:1;} }
+    @keyframes bounce { 0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);} }
+    @keyframes ripple {0%{box-shadow:0 0 0 0 rgba(37,99,235,0.4);}100%{box-shadow:0 0 0 20px rgba(37,99,235,0);} }
+
+    body { background: linear-gradient(135deg,#1e40af,#3b82f6); min-height:100vh; animation:fadeIn .8s ease-out; }
+    .note-container { background:rgba(255,255,255,.95); box-shadow:0 8px 32px rgba(0,0,0,.2); border-radius:16px; animation:fadeIn .6s ease-out; }
+    .btn-primary { background: linear-gradient(135deg,#1e40af,#3b82f6); transition: all .3s ease; }
+    .btn-primary:hover { background: linear-gradient(135deg,#1e3a8a,#2563eb); transform: translateY(-2px); box-shadow:0 4px 12px rgba(37,99,235,.3); }
+    .btn-secondary { background: linear-gradient(135deg,#3b82f6,#60a5fa); transition: all .3s ease; }
+    .btn-secondary:hover { background: linear-gradient(135deg,#2563eb,#3b82f6); transform: translateY(-2px); box-shadow:0 4px 12px rgba(59,130,246,.3); }
+    .share-option { transition: all .3s ease; }
+    .share-option:hover { transform: translateY(-5px); filter: brightness(1.1); }
+    .note-content { min-height:200px; max-height:400px; overflow-y:auto; animation:fadeIn .8s ease-out; }
+    .link-container { background:#eff6ff; border:1px solid #bfdbfe; border-radius:.5rem; animation:fadeIn .5s ease-out; }
+    #downloadPdfBtn { animation:pulse 2s infinite; }
+    #shareNoteBtn:hover svg { animation:bounce .6s infinite; }
+    #generatedLinkSection { animation:fadeIn .8s ease-out; }
+    .animate-list li { animation:slideIn .5s ease-out both; }
+    .animate-list li:nth-child(1){animation-delay:.1s;} .animate-list li:nth-child(2){animation-delay:.2s;}
+    .animate-list li:nth-child(3){animation-delay:.3s;} .animate-list li:nth-child(4){animation-delay:.4s;}
+    .ripple-effect { animation: ripple 1.5s infinite; }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-900 to-indigo-800 min-h-screen text-gray-800 font-sans">
-
-    <div class="max-w-4xl mx-auto p-6">
-        <div class="bg-white rounded-xl shadow-xl p-6 space-y-6">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-indigo-900">{{ note.title }}</h1>
-                <a href="{{ url_for('notes.dashboard') }}" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg">
-                    &larr; Back
-                </a>
-            </div>
-
-            <!-- Decrypted Note Content -->
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 max-h-80 overflow-y-auto">
-                <p>{{ decrypted }}</p>
-            </div>
-
-            <!-- File Preview -->
-            {% if note.file_path %}
-                <div>
-                    <h2 class="text-lg font-semibold mb-2">Attached File:</h2>
-                    {% set ext = note.file_path.rsplit('.', 1)[-1].lower() %}
-                    {% if ext in ['png', 'jpg', 'jpeg', 'gif'] %}
-                        <img src="{{ file_url }}" alt="Image" class="rounded-lg shadow-md max-w-xs">
-                    {% elif ext == 'mp3' %}
-                        <audio controls class="w-full mt-2">
-                            <source src="{{ file_url }}" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio>
-                    {% elif ext in ['mp4', 'webm', 'ogg'] %}
-                        <video controls class="w-full mt-2 rounded-md shadow-md">
-                            <source src="{{ file_url }}" type="video/{{ file_ext }}">
-                            Your browser does not support the video tag.
-                        </video>
-                    {% else %}
-                        <a href="{{ url_for('notes.view_file', filename=note.file_path) }}" target="_blank" class="text-blue-600 hover:underline">
-                            Download File
-                        </a>
-                    {% endif %}
-                </div>
-            {% endif %}
-
-            <!-- Export PDF -->
-            <form action="{{ url_for('notes.export_pdf') }}" method="POST">
-                <input type="hidden" name="title" value="{{ note.title }}">
-                <textarea name="content" style="display:none;">{{ decrypted }}</textarea>
-                {% if note.file_path %}
-                    <input type="hidden" name="file_path" value="{{ note.file_path }}">
-                {% endif %}
-                <button type="submit" class="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg">
-                    Download as PDF
-                </button>
-            </form>
-
-            <!-- Sharing Options -->
-            <div class="pt-4 border-t">
-                <h2 class="text-lg font-semibold text-gray-800 mb-2">🔗 Share this note</h2>
-
-                <form method="POST" class="space-y-2">
-                    <label class="flex items-center">
-                        <input type="checkbox" name="view_once" class="form-checkbox text-indigo-600 mr-2">
-                        <span class="text-sm">View once</span>
-                    </label>
-                    <button type="submit" name="generate_link" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg">
-                        Generate Share Link
-                    </button>
-                </form>
-
-                {% if share_link %}
-                    <div class="mt-4">
-                        <label class="block text-sm font-medium mb-1">Shareable Link:</label>
-                        <input type="text" readonly value="{{ share_link }}" class="w-full p-2 border rounded bg-gray-100 text-sm" onclick="this.select();">
-
-                        <div class="flex gap-3 mt-3 flex-wrap">
-                            <a href="https://wa.me/?text={{ share_link | urlencode }}" target="_blank" class="bg-green-500 text-white px-3 py-1 rounded">
-                                WhatsApp
-                            </a>
-                            <a href="https://t.me/share/url?url={{ share_link | urlencode }}" target="_blank" class="bg-blue-500 text-white px-3 py-1 rounded">
-                                Telegram
-                            </a>
-                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=&su=Note Shared from SecuraNote&body={{ share_link | urlencode }}" target="_blank" class="bg-gray-800 text-white px-3 py-1 rounded">
-                                Gmail
-                            </a>
-                        </div>
-                    </div>
-                {% endif %}
-
-                {% if qr_code_base64 %}
-                    <div class="mt-6">
-                        <h3 class="text-sm font-semibold text-gray-800">QR Code:</h3>
-                        <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="QR Code" class="max-w-[200px] mt-2 rounded shadow">
-
-                        <div class="flex flex-wrap gap-3 mt-3">
-                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=&su=QR%20Code%20for%20Your%20Note&body=Here%20is%20the%20QR%20code:%0A{{ qr_image_url | urlencode }}" target="_blank" class="bg-gray-800 text-white px-3 py-1 rounded">
-                                Share via Gmail
-                            </a>
-                            <a href="data:image/png;base64,{{ qr_code_base64 }}" download="qr_code.png" class="bg-gray-600 text-white px-3 py-1 rounded">
-                                Download QR Code
-                            </a>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">
-                            To share via WhatsApp or Telegram, download and upload the image manually.
-                        </p>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
+<body class="p-4 md:p-6 font-sans text-gray-800">
+  <div class="max-w-3xl mx-auto note-container p-6 md:p-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl md:text-3xl font-bold text-blue-700 slide-in">View Note</h1>
+      <button id="backBtn" class="btn-secondary px-4 py-2 rounded-lg text-white flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg> Back
+      </button>
     </div>
 
+    <!-- Title + Content -->
+    <div class="space-y-6">
+      <h2 class="text-xl font-semibold text-blue-700 pb-2 border-b border-blue-200 slide-in">{{ note.title }}</h2>
+      <div class="note-content bg-blue-50 p-4 rounded-lg border border-blue-100">
+        <p>{{ decrypted }}</p>
+      </div>
+
+      <!-- File attachment preview -->
+      {% if note.file_path %}
+      <div>
+        {% set ext = note.file_path.rsplit('.',1)[-1].lower() %}
+        {% if ext in ['png','jpg','jpeg','gif'] %}
+          <img src="{{ file_url }}" class="rounded-lg shadow-md max-w-xs" />
+        {% elif ext == 'mp3' %}
+          <audio controls class="w-full"><source src="{{ file_url }}" type="audio/mpeg"></audio>
+        {% elif ext in ['mp4','webm','ogg'] %}
+          <video controls class="w-full rounded-md shadow-md"><source src="{{ file_url }}" type="video/{{ file_ext }}"></video>
+        {% else %}
+          <a href="{{ url_for('notes.view_file',filename=note.file_path) }}" class="text-blue-600 hover:underline">Download File</a>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <!-- PDF Export -->
+      <div class="flex justify-end">
+        <button id="downloadPdfBtn" class="btn-primary px-4 py-2 rounded-lg text-white flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg> Download as PDF
+        </button>
+      </div>
+
+      <!-- Share section -->
+      <div class="border-t border-blue-200 pt-6">
+        <button id="shareNoteBtn" class="flex items-center text-blue-600 font-medium hover:text-blue-800">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg> Share this note
+        </button>
+
+        <!-- Options -->
+        <div id="shareOptions" class="mt-4 bg-blue-50 p-4 rounded-lg hidden border border-blue-100">
+          <label class="flex items-center space-x-2 mb-4">
+            <input type="checkbox" id="viewOnce" class="rounded text-blue-500 focus:ring-blue-500 h-4 w-4">
+            <span class="text-sm text-gray-700">View once only</span>
+          </label>
+
+          <button id="generateLinkBtn" class="btn-primary px-4 py-2 rounded-lg text-white mb-4 ripple-effect">
+            Generate Secure Link
+          </button>
+
+          <div id="generatedLinkSection" class="hidden space-y-4">
+            <div class="link-container p-3 flex items-center">
+              <input id="generatedLink" type="text" class="flex-grow bg-transparent border-none focus:outline-none text-sm"
+                value="{{ share_link or 'https://securanote.app/share/...' }}" readonly>
+              <button id="copyLinkBtn" class="ml-2 p-1 rounded-full hover:bg-blue-100">
+                <!-- copy icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="flex flex-wrap gap-4 mb-6">
+              <a href="#" class="share-option flex flex-col items-center">
+                <div class="bg-green-500 text-white p-3 rounded-full">
+                  <!-- WhatsApp icon -->
+                </div><span class="text-sm mt-1">WhatsApp</span>
+              </a>
+              <a href="#" class="share-option flex flex-col items-center">
+                <div class="bg-blue-500 text-white p-3 rounded-full">
+                  <!-- Telegram icon -->
+                </div><span class="text-sm mt-1">Telegram</span>
+              </a>
+              <a href="#" class="share-option flex flex-col items-center">
+                <div class="bg-red-500 text-white p-3 rounded-full">
+                  <!-- Email icon -->
+                </div><span class="text-sm mt-1">Email</span>
+              </a>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-medium text-gray-700 mb-2">QR Code</h3>
+              <div class="flex items-center space-x-4">
+                <div id="qrcode" class="bg-white p-2 rounded-lg shadow-md"></div>
+                <button id="downloadQrBtn" class="text-blue-600 hover:text-blue-800">
+                  <!-- download icon -->
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toastNotification" class="fixed bottom-4 right-4 bg-white shadow rounded-lg p-4 hidden transform transition-all duration-500 translate-y-10 opacity-0">
+      <div class="bg-green-100 p-2 rounded-full mr-3">
+        <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <p id="toastMessage" class="font-medium"></p>
+    </div>
+
+  </div>
+
+  <script>
+    function showToast(msg, dur = 3000) {
+      const t = document.getElementById('toastNotification'),
+            m = document.getElementById('toastMessage');
+      m.textContent = msg; t.classList.remove('hidden','translate-y-10','opacity-0');
+      setTimeout(() => t.classList.add('translate-y-10','opacity-0'), dur);
+      setTimeout(() => t.classList.add('hidden'), dur+500);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('backBtn').addEventListener('click', () => {
+        showToast('Going back to dashboard...');
+        // actual redirect here
+      });
+
+      document.getElementById('shareNoteBtn').addEventListener('click', () => {
+        const so = document.getElementById('shareOptions');
+        so.classList.toggle('hidden');
+        if (!so.classList.contains('hidden')) so.style.animation = 'fadeIn .5s ease-out';
+      });
+
+      document.getElementById('generateLinkBtn').addEventListener('click', () => {
+        const btn = document.getElementById('generateLinkBtn');
+        btn.innerHTML = '<span class="inline-block animate-spin mr-2">↻</span>Generating...';
+        btn.disabled = true;
+        setTimeout(() => {
+          document.getElementById('generatedLinkSection').classList.remove('hidden');
+          new QRCode(document.getElementById('qrcode'), {
+            text: document.getElementById('generatedLink').value,
+            width: 128, height: 128, colorDark: '#000', colorLight: '#fff', correctLevel:QRCode.CorrectLevel.H
+          });
+          btn.innerHTML = 'Generate Secure Link';
+          btn.disabled = false;
+          showToast('Secure link generated!');
+        }, 1000);
+      });
+
+      document.getElementById('copyLinkBtn').addEventListener('click', () => {
+        const inp = document.getElementById('generatedLink');
+        inp.select();
+        document.execCommand('copy');
+        showToast('Link copied!');
+      });
+
+      document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+        const btn = document.getElementById('downloadPdfBtn');
+        const old = btn.innerHTML;
+        btn.innerHTML = '<span class="inline-block animate-spin mr-2">↻</span>Preparing PDF...';
+        btn.disabled = true;
+        setTimeout(() => {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+          doc.setFontSize(16).text('{{ note.title }}', 20, 20);
+          doc.setFontSize(12).text(document.querySelector('.note-content').innerText, 20, 30, { maxWidth:170 });
+          doc.save("note.pdf");
+          btn.innerHTML = old;
+          btn.disabled = false;
+          showToast('PDF downloaded!');
+        }, 1500);
+      });
+
+      document.getElementById('downloadQrBtn').addEventListener('click', () => {
+        const c = document.querySelector('#qrcode canvas');
+        if (c) {
+          const a = document.createElement('a');
+          a.href = c.toDataURL();
+          a.download = 'qr.png';
+          a.click();
+          showToast('QR code downloaded!');
+        }
+      });
+
+      document.querySelectorAll('.share-option').forEach(el => {
+        el.addEventListener('click', e => {
+          e.preventDefault();
+          const p = el.querySelector('span').textContent;
+          showToast(`Sharing via ${p}...`);
+        });
+      });
+    });
+  </script>
 </body>
 </html>
