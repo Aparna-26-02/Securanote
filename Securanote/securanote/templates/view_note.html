@@ -3,56 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{{ note.title }} - SecuraNote</title>
+  <title>{{ note.title }} | SecuraNote</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .fade-in-up { animation: fadeInUp 0.5s ease-out; }
-    .ripple:active::after {
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.5s ease-out; }
+
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ripple::after {
       content: "";
       position: absolute;
-      border-radius: 9999px;
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
       transform: scale(0);
-      animation: ripple-effect 0.6s linear;
+      opacity: 0;
+      pointer-events: none;
+      animation: ripple 0.6s linear;
     }
-    @keyframes ripple-effect {
-      to { transform: scale(4); opacity: 0; }
+
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    button.ripple:active::after {
+      top: 50%;
+      left: 50%;
+      width: 100px;
+      height: 100px;
+      margin-left: -50px;
+      margin-top: -50px;
+      transform: scale(0);
+      opacity: 0.75;
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-blue-800 to-indigo-700 min-h-screen text-white p-6">
+<body class="bg-gradient-to-br from-sky-800 to-indigo-900 min-h-screen p-6 text-white">
 
-  <div class="max-w-4xl mx-auto bg-white bg-opacity-10 backdrop-blur-md p-6 rounded-2xl shadow-lg space-y-6 fade-in-up">
+  <div class="max-w-4xl mx-auto bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl fade-in space-y-6">
 
     <!-- Header -->
     <div class="flex justify-between items-center">
-      <h1 class="text-2xl font-bold text-white">📓 {{ note.title }}</h1>
-      <a href="{{ url_for('notes.dashboard') }}" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition">⬅ Back</a>
+      <h1 class="text-2xl font-bold">{{ note.title }}</h1>
+      <a href="{{ url_for('notes.dashboard') }}" class="text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg">← Back</a>
     </div>
 
     <!-- Note Content -->
     <div class="bg-white/10 p-4 rounded-xl text-white border border-white/20 max-h-64 overflow-y-auto">
-      <p>{{ decrypted }}</p>
+      {{ decrypted }}
     </div>
 
-    <!-- Attached File -->
+    <!-- File Preview -->
     {% if note.file_path %}
       <div>
         <h2 class="font-semibold mb-2">📎 Attached File:</h2>
         {% set ext = note.file_path.rsplit('.', 1)[-1].lower() %}
         {% if ext in ['png', 'jpg', 'jpeg', 'gif'] %}
-          <img src="{{ file_url }}" alt="Image" class="w-full max-w-md rounded-lg shadow-lg" />
+          <img src="{{ file_url }}" alt="Image" class="w-full max-w-md rounded-lg shadow-md" />
         {% elif ext == 'mp3' %}
-          <audio controls class="mt-2 w-full">
-            <source src="{{ file_url }}" type="audio/mpeg" />
+          <audio controls class="w-full mt-2">
+            <source src="{{ file_url }}" type="audio/mpeg">
           </audio>
         {% elif ext in ['mp4', 'webm', 'ogg'] %}
-          <video controls class="mt-2 w-full rounded-lg">
+          <video controls class="w-full mt-2 rounded-lg">
             <source src="{{ file_url }}" type="video/{{ ext }}">
           </video>
         {% else %}
-          <a href="{{ file_url }}" class="text-blue-200 underline" target="_blank">Download Attached File</a>
+          <a href="{{ file_url }}" target="_blank" class="text-blue-300 underline">📥 Download Attached File</a>
         {% endif %}
       </div>
     {% endif %}
@@ -64,39 +87,35 @@
       {% if note.file_path %}
         <input type="hidden" name="file_path" value="{{ note.file_path }}">
       {% endif %}
-      <button type="submit" class="relative bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg overflow-hidden ripple">
-        📄 Export to PDF
-      </button>
+      <button type="submit" class="ripple bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg mt-2">📄 Export as PDF</button>
     </form>
 
     <!-- Share Section -->
     <div class="mt-6">
-      <button id="toggleShare" class="text-white hover:text-gray-300 font-semibold">🔗 Share Note</button>
+      <button id="toggleShare" class="font-semibold hover:text-gray-300">🔗 Share Note</button>
       <div id="shareSection" class="mt-4 hidden space-y-4">
-
-        <!-- Generate Share Link -->
+        
+        <!-- View Once Checkbox -->
         <form method="POST">
           <label class="inline-flex items-center">
-            <input type="checkbox" name="view_once" class="form-checkbox text-indigo-600">
+            <input type="checkbox" name="view_once" class="form-checkbox text-indigo-500">
             <span class="ml-2">Allow view only once</span>
           </label><br>
-          <button type="submit" name="generate_link" class="mt-2 bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg ripple">
-            🔒 Generate Secure Link
-          </button>
+          <button type="submit" name="generate_link" class="ripple bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg mt-2">🔒 Generate Secure Link</button>
         </form>
 
         {% if share_link %}
-          <!-- Share Link Box -->
-          <div class="bg-white/10 p-3 rounded-lg flex items-center justify-between border border-white/20">
-            <input type="text" value="{{ share_link }}" readonly class="bg-transparent w-full text-white focus:outline-none" onclick="this.select()">
+          <!-- Shareable Link -->
+          <div class="flex items-center bg-white/10 p-3 rounded-lg border border-white/20">
+            <input type="text" value="{{ share_link }}" readonly class="bg-transparent text-white w-full focus:outline-none" onclick="this.select()">
             <button onclick="navigator.clipboard.writeText('{{ share_link }}')" class="ml-2 text-blue-200 hover:text-white">📋</button>
           </div>
 
           <!-- Share Buttons -->
-          <div class="flex gap-3 flex-wrap">
-            <a href="https://wa.me/?text={{ share_link | urlencode }}" target="_blank" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition">WhatsApp</a>
-            <a href="https://t.me/share/url?url={{ share_link | urlencode }}" target="_blank" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition">Telegram</a>
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&su=Shared%20Note&body={{ share_link | urlencode }}" target="_blank" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition">Gmail</a>
+          <div class="flex flex-wrap gap-3">
+            <a href="https://wa.me/?text={{ share_link | urlencode }}" target="_blank" class="bg-green-500 text-white px-4 py-2 rounded-lg">WhatsApp</a>
+            <a href="https://t.me/share/url?url={{ share_link | urlencode }}" target="_blank" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Telegram</a>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&su=Shared%20Note&body={{ share_link | urlencode }}" target="_blank" class="bg-red-500 text-white px-4 py-2 rounded-lg">Gmail</a>
           </div>
 
           <!-- QR Code -->
@@ -113,9 +132,10 @@
   </div>
 
   <script>
-    document.getElementById("toggleShare").addEventListener("click", function () {
+    document.getElementById("toggleShare").addEventListener("click", () => {
       document.getElementById("shareSection").classList.toggle("hidden");
     });
   </script>
+
 </body>
 </html>
