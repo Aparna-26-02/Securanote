@@ -69,7 +69,7 @@
         </div>
 
         <!-- Modified form with 6 boxes but keeping your original form structure -->
-        <form method="POST" class="space-y-6">
+        <form method="POST" action="{{ url_for('auth.verify_reset_otp') }}" class="space-y-6">
             <div class="space-y-2">
                 <p class="block text-sm font-medium text-gray-700">Enter OTP:</p>
                 
