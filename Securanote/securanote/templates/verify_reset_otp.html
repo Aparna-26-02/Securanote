@@ -62,35 +62,34 @@
       <p class="text-indigo-600 font-medium mt-1" id="userEmail">user@example.com</p>
     </div>
 
-    <form id="otpForm" class="space-y-6">
-      <div class="space-y-4">
-        <div class="flex justify-center space-x-2 sm:space-x-4">
-          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
-          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
-          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
-          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
-          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
-          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
-        </div>
-        <p id="otpError" class="text-red-500 text-sm text-center hidden">Invalid verification code. Please try again.</p>
-        <div class="flex justify-center">
-          <div id="countdown" class="text-sm text-gray-600">Code expires in <span id="timer" class="font-medium">05:00</span></div>
-        </div>
+    <form method="POST" action="{{ url_for('auth.verify_reset_otp') }}" id="otpForm">
+      <p class="mb-2">Enter OTP:</p>
+      <div class="flex justify-between mb-6">
+        {% for i in range(6) %}
+        <input type="text" name="otp_digit" class="otp-input" maxlength="1" pattern="\d*" required>
+        {% endfor %}
       </div>
+      <input type="hidden" name="otp" id="otpHidden">
 
       <button type="submit" id="verifyButton" class="btn-primary w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
         Verify Code
       </button>
 
-      <div class="text-center space-y-3">
+      <div class="text-center mt-6 space-y-3">
         <p class="text-sm text-gray-600">Didn't receive the code?</p>
+
+        <!-- Resend OTP Button (JS triggers form submission) -->
         <button type="button" id="resendButton" class="text-indigo-600 font-medium hover:underline focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed" disabled>
           Resend Code (<span id="resendTimer">30</span>s)
         </button>
+
+        <!-- Hidden form for resending OTP -->
+        <form method="POST" action="{{ url_for('auth.resend_reset_otp') }}" id="resendForm" class="hidden"></form>
+
         <div class="pt-2">
-          <button type="button" id="backButton" class="text-gray-600 text-sm hover:underline focus:outline-none">
+          <a href="{{ url_for('auth.login') }}" class="text-gray-600 text-sm hover:underline focus:outline-none">
             Back to Login
-          </button>
+          </a>
         </div>
       </div>
     </form>
@@ -103,32 +102,28 @@
       </div>
     </div>
   </div>
+
 <script>
   const otpInputs = document.querySelectorAll('.otp-input');
   const otpForm = document.getElementById('otpForm');
+  const otpHidden = document.getElementById('otpHidden');
   const resendButton = document.getElementById('resendButton');
-  const resendTimer = document.getElementById('resendTimer');
-  const timerElement = document.getElementById('timer');
+  const resendForm = document.getElementById('resendForm');
+  const resendTimerSpan = document.getElementById('resendTimer');
   const notification = document.getElementById('notification');
   const notificationText = document.getElementById('notificationText');
   const notificationIcon = document.getElementById('notificationIcon');
-  const otpError = document.getElementById('otpError');
 
-  let resendTimeLeft = 30;
-  let resendTimerInterval;
-  let otpTimeLeft = 5 * 60;
-  let otpTimerInterval;
-
-  // Focus and Input Handling
-  otpInputs.forEach((input, index) => {
+  // Input focus and paste logic
+  otpInputs.forEach((input, idx) => {
     input.addEventListener('input', () => {
       input.value = input.value.replace(/\D/g, '');
-      if (input.value && index < otpInputs.length - 1) otpInputs[index + 1].focus();
+      if (input.value && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
     });
 
     input.addEventListener('keydown', e => {
-      if (e.key === 'Backspace' && !input.value && index > 0) {
-        otpInputs[index - 1].focus();
+      if (e.key === 'Backspace' && !input.value && idx > 0) {
+        otpInputs[idx - 1].focus();
       }
     });
 
@@ -138,76 +133,33 @@
       paste.split('').forEach((char, i) => {
         if (otpInputs[i]) otpInputs[i].value = char;
       });
-      if (paste.length === otpInputs.length) otpInputs[otpInputs.length - 1].focus();
     });
   });
 
-  // OTP Form Submit
-  otpForm.addEventListener('submit', e => {
-    e.preventDefault();
+  // Submit OTP form with combined value
+  otpForm.addEventListener('submit', () => {
     const otpValue = Array.from(otpInputs).map(input => input.value).join('');
-    if (otpValue === '123456') {
-      showNotification('Verification successful!', 'success');
-      setTimeout(() => window.location.href = '/login', 2000);
-    } else {
-      otpError.classList.remove('hidden');
-      showNotification('Invalid verification code.', 'error');
-    }
+    otpHidden.value = otpValue;
   });
 
-  // Resend Logic
+  // Resend OTP logic
   resendButton.addEventListener('click', () => {
-    showNotification('A new OTP has been sent to your email.', 'success');
-    resetOtpTimer();
-    resetResendTimer();
-    otpInputs.forEach(input => input.value = '');
-    otpInputs[0].focus();
+    resendForm.submit();
   });
 
-  // Timer Logic
-  function resetOtpTimer() {
-    clearInterval(otpTimerInterval);
-    otpTimeLeft = 5 * 60;
-    timerElement.classList.remove('text-red-500');
-    updateOtpTimerDisplay();
+  let countdown = 30;
+  const interval = setInterval(() => {
+    if (countdown > 0) {
+      resendTimerSpan.innerText = countdown;
+      countdown--;
+    } else {
+      resendButton.innerText = 'Resend Code';
+      resendButton.disabled = false;
+      clearInterval(interval);
+    }
+  }, 1000);
 
-    otpTimerInterval = setInterval(() => {
-      otpTimeLeft--;
-      updateOtpTimerDisplay();
-      if (otpTimeLeft <= 0) {
-        clearInterval(otpTimerInterval);
-        timerElement.textContent = '00:00';
-        timerElement.classList.add('text-red-500');
-        showNotification('Verification code expired. Please resend.', 'error');
-      }
-    }, 1000);
-  }
-
-  function updateOtpTimerDisplay() {
-    const minutes = String(Math.floor(otpTimeLeft / 60)).padStart(2, '0');
-    const seconds = String(otpTimeLeft % 60).padStart(2, '0');
-    timerElement.textContent = `${minutes}:${seconds}`;
-  }
-
-  function resetResendTimer() {
-    clearInterval(resendTimerInterval);
-    resendTimeLeft = 30;
-    resendButton.disabled = true;
-    resendButton.textContent = `Resend Code (${resendTimeLeft}s)`;
-
-    resendTimerInterval = setInterval(() => {
-      resendTimeLeft--;
-      if (resendTimeLeft <= 0) {
-        clearInterval(resendTimerInterval);
-        resendButton.disabled = false;
-        resendButton.textContent = 'Resend Code';
-      } else {
-        resendButton.textContent = `Resend Code (${resendTimeLeft}s)`;
-      }
-    }, 1000);
-  }
-
-  // Notifications
+  // Notification function
   function showNotification(message, type = 'success') {
     notificationText.textContent = message;
     notificationIcon.innerHTML = type === 'success'
@@ -217,11 +169,6 @@
     notification.classList.remove('translate-x-full');
     setTimeout(() => notification.classList.add('translate-x-full'), 3000);
   }
-
-  // Init
-  resetOtpTimer();
-  resetResendTimer();
-  otpInputs[0].focus();
 </script>
 </body>
 </html>
