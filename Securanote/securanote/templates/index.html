@@ -180,7 +180,13 @@
     .footer-section a{color:#bdc3c7;transition:.3s;}
     .footer-section a:hover{color:#ff6b35;}
     .footer-bottom{text-align:center;margin-top:2rem;padding-top:2rem;border-top:1px solid #34495e;color:#bdc3c7;}
-    
+    html {
+     scroll-behavior: smooth;
+     }
+
+    <!-- In <head> -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
 
   </style>
 </head>
@@ -206,12 +212,11 @@
   <section class="hero">
     <div class="hero-container">
       <div class="hero-content">
-        <h1 class="hero-title">
-          NEXT-GEN<br>
-          <span class="security-highlight">SECURITY</span> FOR<br>
-          YOUR DIGITAL<br>
-          ASSETS
-        </h1>
+        
+       <h1 class="hero-title" data-aos="fade-up">
+          NEXT-GEN <span class="security-highlight">SECURITY</span> FOR YOUR DIGITAL ASSETS
+         </h1>
+          </section>
         <p class="hero-subtitle">
           Military-grade encryption for your notes, images, and videos with four-pin authentication and secure S3 storage.
         </p>
@@ -231,7 +236,7 @@
   </section>
 
   <!-- Features -->
-  <section class="features" id="features">
+  <section id="features" data-aos="fade-right">
     <div class="features-container">
       <h2 class="features-title">ADVANCED SECURITY FEATURES</h2>
       <p>Protect your sensitive information with our comprehensive security solutions.</p>
@@ -355,11 +360,17 @@
     <div class="footer-bottom">&copy; 2025 SecuraNote. All rights reserved.</div>
   </footer>
 
-  <script>
+ </script>
     // Navbar scroll effect
     window.addEventListener('scroll', () => {
       document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
     });
   </script>
+  <!-- Before closing </body> tag -->
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
+
 </body>
 </html>
