@@ -56,74 +56,6 @@
   background: #e55a2b;
   transform: translateY(-2px);
 }
-.hero {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 60px 40px;
-  background-image: radial-gradient(#000 1px, transparent 0);
-  background-size: 20px 20px;
-  background-color: #fff;
-  position: relative;
-  z-index: 1;
-  min-height: 100vh;
-}
-
-.hero-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  width: 100%;
-  gap: 40px;
-}
-
-.hero-text {
-  flex: 1;
-}
-
-.hero-title {
-  font-size: 3rem;
-  line-height: 1.2;
-}
-
-.security-highlight {
-  color: #4caf50; /* adjust to match your main accent color */
-}
-
-.secure-box {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
-
-.card {
-  background: white;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
-  text-align: center;
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.icon {
-  font-size: 2rem;
-}
-
-.pin-dots {
-  font-size: 2rem;
-  letter-spacing: 10px;
-  margin-top: 20px;
-}
-
 
     /* Hero */
     .hero { background:linear-gradient(135deg,#f8f9fa,#e9ecef); min-height:100vh; display:flex;align-items:center;padding:2rem; position:relative; overflow:hidden; }
@@ -297,14 +229,11 @@
           <a href="#features" class="btn-secondary">LEARN MORE</a>
         </div>
       </div>
-      <div class="secure-box" data-aos="fade-left">
-      <div class="card">
-        <div class="card-header">
-          <div class="icon">🔒</div>
-          <h3>SECURE ACCESS</h3>
+      <div class="security-box">
+          <h3><div class="shield-icon">🛡️</div>SECURE ACCESS</h3>
+          <p>Enter your 4‑pin authentication code to access your encrypted data.</p>
+          <input type="text" class="pin-input" placeholder="● ● ● ●" readonly>
         </div>
-        <p>Enter your 4-pin authentication code to access your encrypted data.</p>
-        <div class="pin-dots">• • • •</div>
       </div>
     </div>
   </div>
