@@ -2,15 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SecuraNote – Next‑Gen Security</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; color: #333; overflow-x: hidden; }
-    a { text-decoration: none; color: inherit; }
-    button { cursor: pointer; }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    /* Nav */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      color: #111;
+      background: radial-gradient(#e6e6e6 1px, transparent 1px),
+                  radial-gradient(#e6e6e6 1px, transparent 1px);
+      background-position: 0 0, 25px 25px;
+      background-size: 50px 50px;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* Navigation */
     nav {
       position: fixed;
       top: 0;
@@ -19,77 +43,71 @@
       backdrop-filter: blur(10px);
       z-index: 1000;
       padding: 1rem 2rem;
-      transition: all 0.3s ease;
-      transform: translateY(-100%);
-      animation: navSlideDown 0.8s ease-out forwards;
+      animation: navSlideDown 0.6s ease-out forwards;
     }
 
     @keyframes navSlideDown {
+      from {
+        transform: translateY(-100%);
+      }
       to {
         transform: translateY(0);
       }
     }
 
-    nav.scrolled {
-      background: rgba(255, 255, 255, 0.98);
-      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
-    }
-
     .nav-container {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
       align-items: center;
       max-width: 1200px;
       margin: auto;
+      gap: 2rem;
     }
 
     .logo {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: bold;
       color: #333;
     }
 
     .lock-icon {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       background: #ff6b35;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 1.2rem;
+      font-size: 1rem;
     }
 
     .nav-links {
       display: flex;
-      gap: 2rem;
+      justify-content: center;
+      gap: 2.5rem;
       list-style: none;
     }
 
     .nav-links a {
-      position: relative;
-      font-weight: 500;
+      font-weight: 600;
+      font-size: 1rem;
       color: #333;
-      transition: color 0.3s;
-    }
-
-    .nav-links a:hover {
-      color: #ff6b35;
+      position: relative;
     }
 
     .nav-links a::after {
       content: '';
       position: absolute;
-      width: 0;
+      width: 0%;
       height: 2px;
-      bottom: -5px;
-      left: 0;
       background: #ff6b35;
-      transition: width 0.3s;
+      bottom: -4px;
+      left: 0;
+      transition: 0.3s;
     }
 
     .nav-links a:hover::after {
@@ -97,18 +115,16 @@
     }
 
     .nav-buttons a {
-      padding: 0.6rem 1.2rem;
+      padding: 0.6rem 1rem;
       border-radius: 5px;
       font-weight: 600;
       transition: 0.3s ease;
-      margin-left: 1rem;
-      display: inline-block;
+      margin-left: 0.8rem;
     }
 
     .nav-buttons a:first-child {
       border: 2px solid #ff6b35;
       color: #ff6b35;
-      background: transparent;
     }
 
     .nav-buttons a:first-child:hover {
@@ -120,23 +136,20 @@
       background: #ff6b35;
       color: white;
       border: none;
-      box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+      box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
     }
 
     .nav-buttons a:last-child:hover {
       background: #e55a2b;
-      transform: translateY(-2px);
     }
 
-    /* Hero */
+    /* Hero Section */
     .hero {
-      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      padding-top: 100px;
       min-height: 100vh;
       display: flex;
       align-items: center;
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
+      padding: 3rem 2rem;
     }
 
     .hero-container {
@@ -146,8 +159,104 @@
       max-width: 1200px;
       margin: auto;
       align-items: center;
-      position: relative;
-      z-index: 1;
+    }
+
+    .hero-content {
+      animation: fadeInSlide 1.2s ease-out forwards;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      color: #111;
+    }
+
+    .hero-title span {
+      color: #ff6b35;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: #555;
+      margin-bottom: 2rem;
+      max-width: 90%;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn-primary {
+      background: #ff6b35;
+      color: white;
+      padding: 0.8rem 1.6rem;
+      border-radius: 5px;
+      font-weight: bold;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #e55a2b;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #ff6b35;
+      border: 2px solid #ff6b35;
+      padding: 0.8rem 1.6rem;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .btn-secondary:hover {
+      background: #ff6b35;
+      color: white;
+    }
+
+    .hero-visual {
+      animation: fadeInSlide 1.4s ease-out forwards;
+    }
+
+    .security-box {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      transform: rotateY(-10deg);
+    }
+
+    .security-box h3 {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .shield-icon {
+      width: 48px;
+      height: 48px;
+      background: #ff6b35;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+    }
+
+    .pin-input {
+      margin-top: 1rem;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      text-align: center;
+      font-family: monospace;
+      background: #f5f5f5;
     }
 
     @keyframes fadeInSlide {
@@ -161,140 +270,39 @@
       }
     }
 
-    .hero-content {
-      animation: fadeInSlide 1.2s ease-out forwards;
+    /* Sections */
+    section {
+      padding: 6rem 2rem;
+      max-width: 1000px;
+      margin: auto;
     }
 
-    .hero-visual {
-      animation: fadeInSlide 1.4s ease-out forwards;
-    }
-
-    .hero-title {
-      font-size: 3.5rem;
-      font-weight: bold;
-      line-height: 1.2;
-      margin-bottom: 1.5rem;
-      color: #111;
-    }
-
-    .security-highlight {
-      color: #ff6b35;
-      position: relative;
-    }
-
-    .security-highlight::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, #28a745, #20c997);
-      animation: glow 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes glow {
-      from {
-        box-shadow: 0 0 5px #28a745;
-      }
-      to {
-        box-shadow: 0 0 20px #28a745;
-      }
-    }
-
-    .hero-subtitle {
-      font-size: 1.2rem;
-      color: #6c757d;
-      margin-bottom: 2rem;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .btn-primary {
-      background: #ff6b35;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 5px;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    .btn-primary:hover {
-      background: #e55a2b;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
-    }
-
-    .btn-secondary {
-      background: transparent;
-      color: #ff6b35;
-      border: 2px solid #ff6b35;
-      padding: 0.75rem 1.5rem;
-      border-radius: 5px;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    .btn-secondary:hover {
-      background: #ff6b35;
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
-    }
-
-    .security-box {
-      background: white;
-      border-radius: 15px;
-      padding: 2rem;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      transform: perspective(1000px) rotateY(-10deg);
-      transition: 0.3s;
-    }
-
-    .security-box:hover {
-      transform: perspective(1000px) rotateY(0) translateY(-10px);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
-    }
-
-    .security-box h3 {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
+    section h2 {
+      font-size: 2rem;
       margin-bottom: 1rem;
-      font-size: 1.3rem;
+      color: #222;
     }
 
-    .shield-icon {
-      width: 50px;
-      height: 50px;
-      background: #ff6b35;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 1.5rem;
-    }
-
-    .pin-input {
-      background: #f8f9fa;
-      border: 1px solid #e9ecef;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-top: 1rem;
-      font-family: monospace;
-      text-align: center;
+    section p {
       font-size: 1.1rem;
+      color: #444;
+    }
+
+    /* Simple fade-up animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
 <body>
-  <!-- Navbar -->
+  <!-- Navigation -->
   <nav id="navbar">
     <div class="nav-container">
       <a href="#" class="logo">
@@ -312,39 +320,66 @@
     </div>
   </nav>
 
-  <!-- Hero -->
+  <!-- Hero Section -->
   <section class="hero">
     <div class="hero-container">
       <div class="hero-content">
         <h1 class="hero-title">
-          NEXT-GEN<br>
-          <span class="security-highlight">SECURITY</span> FOR<br>
-          YOUR DIGITAL<br>
-          ASSETS
+          Next‑Gen<br>
+          <span>Security</span> for<br>
+          Your Digital Assets
         </h1>
         <p class="hero-subtitle">
-          Military-grade encryption for your notes, images, and videos with four-pin authentication and secure S3 storage.
+          Military-grade encryption for your notes, images, and videos with four‑pin authentication and secure S3 storage.
         </p>
         <div class="hero-buttons">
-          <a href="#" class="btn-primary">START ENCRYPTING</a>
-          <a href="#features" class="btn-secondary">LEARN MORE</a>
+          <a href="#" class="btn-primary">Start Encrypting</a>
+          <a href="#features" class="btn-secondary">Learn More</a>
         </div>
       </div>
       <div class="hero-visual">
         <div class="security-box">
           <h3><div class="shield-icon">🛡️</div>SECURE ACCESS</h3>
           <p>Enter your 4‑pin authentication code to access your encrypted data.</p>
-          <input type="text" class="pin-input" placeholder="● ● ● ●" readonly>
+          <input type="text" class="pin-input" placeholder="● ● ● ●" readonly />
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Features Section -->
+  <section id="features" class="reveal">
+    <h2>Features</h2>
+    <p>Our secure note app provides military-grade AES‑256 encryption, S3 file storage, and multi‑device syncing.</p>
+  </section>
+
+  <!-- Security Section -->
+  <section id="security" class="reveal">
+    <h2>Security</h2>
+    <p>We use industry-standard encryption algorithms and token-based authentication with cloud isolation for total protection.</p>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="reveal">
+    <h2>About</h2>
+    <p>SecuraNote was built by a team of engineers passionate about security and simplicity. We're open-source and community-driven.</p>
+  </section>
+
   <script>
-    // Add scroll effect
-    window.addEventListener('scroll', () => {
-      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
-    });
+    // Scroll reveal animation
+    const reveals = document.querySelectorAll('.reveal');
+    function animateOnScroll() {
+      reveals.forEach((el) => {
+        const windowHeight = window.innerHeight;
+        const elementTop = el.getBoundingClientRect().top;
+        const elementVisible = 100;
+        if (elementTop < windowHeight - elementVisible) {
+          el.classList.add("visible");
+        }
+      });
+    }
+    window.addEventListener("scroll", animateOnScroll);
+    window.addEventListener("load", animateOnScroll);
   </script>
 </body>
 </html>
