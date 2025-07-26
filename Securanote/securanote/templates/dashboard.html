@@ -39,9 +39,8 @@
     </div>
   </div>
 
-  <!-- Main -->
+  <!-- Main Content -->
   <div class="flex-1 p-6 overflow-y-auto">
-    <!-- Top Header -->
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-xl font-semibold">Hi {{ user.username }}</h2>
       <div class="flex items-center space-x-4">
@@ -58,7 +57,7 @@
       </div>
       <div class="bg-white shadow rounded p-4">
         <div class="text-sm text-gray-500">Downloads</div>
-        <div class="text-2xl font-bold">5</div> <!-- Update dynamically if needed -->
+        <div class="text-2xl font-bold">5</div>
       </div>
       <div class="bg-white shadow rounded p-4">
         <div class="text-sm text-gray-500">Encrypted Notes</div>
@@ -91,21 +90,25 @@
       </form>
     </div>
 
-    <!-- Notes -->
+    <!-- Notes List -->
     <div id="notesList">
       {% for note in notes|reverse %}
         <div class="bg-white p-4 shadow rounded-lg mb-4 note-card">
           <strong class="note-title text-lg">{{ note.title }}</strong>
           <p class="text-sm text-gray-500">Created: {{ note.timestamp|localtime }}</p>
           <p class="text-sm text-gray-500">Encrypted with: {{ note.encryption_type }}</p>
+
+          <!-- File Preview -->
           {% if note.file_path %}
             {% set file_url = url_for('static', filename='uploads/' ~ note.file_path) %}
-            {% if note.file_path.endswith('.jpg') or note.file_path.endswith('.png') %}
+            {% if note.file_path.endswith('.jpg') or note.file_path.endswith('.jpeg') or note.file_path.endswith('.png') %}
               <img src="{{ file_url }}" class="w-48 mt-2 border" />
             {% elif note.file_path.endswith('.mp3') or note.file_path.endswith('.wav') %}
               <audio controls class="mt-2"><source src="{{ file_url }}"></audio>
             {% endif %}
           {% endif %}
+
+          <!-- Actions -->
           <div class="flex space-x-2 mt-2">
             <form action="{{ url_for('notes.view_note', note_id=note.id) }}" method="GET">
               <button class="bg-blue-500 text-white px-3 py-1 rounded">View</button>
@@ -122,6 +125,8 @@
         <p>No notes yet.</p>
       {% endfor %}
     </div>
+
+    <p class="mt-6"><a href="{{ url_for('auth.logout') }}" class="text-blue-600 underline">Logout</a></p>
   </div>
 </div>
 
