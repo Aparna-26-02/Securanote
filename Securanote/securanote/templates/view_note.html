@@ -108,18 +108,21 @@
         </form>
 
         <!-- Share Section -->
-        <div class="mt-10 border-t border-blue-200 pt-6">
-            <h3 class="text-lg font-semibold text-blue-700 mb-3">🔗 Share this note</h3>
-            <form method="POST" class="space-y-4">
-                <label class="flex items-center space-x-2">
-                    <input type="checkbox" name="view_once" id="view_once" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
-                    <span class="text-sm text-gray-700">View once only (link expires after first view)</span>
-                </label>
-                <button type="submit" name="generate_link" class="btn-secondary px-4 py-2 rounded-lg text-white font-medium">
-                    Generate Link
-                </button>
-            </form>
-        </div>
+        <!-- Share Section -->
+<div class="mt-10 border-t border-blue-200 pt-6">
+    <h3 class="text-lg font-semibold text-blue-700 mb-3 cursor-pointer" onclick="toggleShareOptions()">🔗 Share this note</h3>
+    
+    <!-- Share Options (Checkbox + Generate Button) -->
+    <form id="shareForm" method="POST" class="space-y-4 hidden">
+        <label class="flex items-center space-x-2">
+            <input type="checkbox" name="view_once" id="view_once" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+            <span class="text-sm text-gray-700">View once only (link expires after first view)</span>
+        </label>
+        <button type="submit" name="generate_link" class="btn-secondary px-4 py-2 rounded-lg text-white font-medium">
+            Generate Link
+        </button>
+    </form>
+</div>
 
         <!-- Shareable Link Display -->
         {% if share_link %}
@@ -165,5 +168,13 @@
         {% endif %}
 
     </div>
+    <!-- JavaScript -->
+<script>
+    function toggleShareOptions() {
+        const shareForm = document.getElementById('shareForm');
+        shareForm.classList.toggle('hidden');
+    }
+</script>
+
 </body>
 </html>
