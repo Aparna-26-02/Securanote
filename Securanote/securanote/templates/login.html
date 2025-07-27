@@ -54,7 +54,7 @@
       font-size: 18px;
       background: white;
       border: none;
-      padding: 10px 12px;
+      padding: 8px 10px;
       border-radius: 50%;
       cursor: pointer;
       z-index: 10;
@@ -74,10 +74,10 @@
     .container {
       background-color: white;
       width: 100%;
-      max-width: 380px;
-      padding: 40px 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 35px rgba(0,0,0,0.1);
+      max-width: 300px;
+      padding: 30px 20px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
       text-align: center;
       animation: fadeInUp 0.8s ease-out;
     }
@@ -88,15 +88,15 @@
     }
 
     h2 {
-      margin-bottom: 10px;
-      font-size: 28px;
+      margin-bottom: 8px;
+      font-size: 24px;
       font-weight: 600;
     }
 
     p {
-      font-size: 14px;
+      font-size: 13px;
       color: #888;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     body.dark p {
@@ -106,14 +106,14 @@
     .user-icon {
       background-color: #a58bff;
       color: white;
-      font-size: 24px;
-      width: 60px;
-      height: 60px;
+      font-size: 20px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 20px;
+      margin: 0 auto 16px;
       transition: transform 0.3s ease;
     }
 
@@ -127,15 +127,15 @@
 
     .form-group {
       position: relative;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     .form-group input {
       width: 100%;
-      padding: 14px 12px;
+      padding: 12px 10px;
       border: 1px solid #ccc;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
       background-color: #f9f9f9;
       outline: none;
     }
@@ -149,9 +149,9 @@
     .form-group label {
       position: absolute;
       top: 50%;
-      left: 12px;
+      left: 10px;
       color: #888;
-      font-size: 14px;
+      font-size: 13px;
       transform: translateY(-50%);
       pointer-events: none;
       transition: all 0.2s ease;
@@ -160,10 +160,10 @@
     .form-group input:focus + label,
     .form-group input:not(:placeholder-shown) + label {
       top: -8px;
-      left: 10px;
+      left: 8px;
       background-color: white;
       padding: 0 6px;
-      font-size: 12px;
+      font-size: 11px;
       color: #7f5af0;
     }
 
@@ -177,8 +177,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13px;
-      margin-top: -10px;
+      font-size: 12px;
+      margin-top: -8px;
     }
 
     .remember-forgot a {
@@ -187,20 +187,20 @@
     }
 
     .remember-forgot input[type="checkbox"] {
-      margin-right: 5px;
+      margin-right: 4px;
     }
 
     .submit-btn {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       background: linear-gradient(135deg, #7f5af0, #5f4dee);
       color: white;
       border: none;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
       border-radius: 8px;
       cursor: pointer;
-      margin-top: 20px;
+      margin-top: 15px;
       transition: background 0.3s ease;
     }
 
@@ -209,8 +209,8 @@
     }
 
     .footer-link {
-      font-size: 13px;
-      margin-top: 20px;
+      font-size: 12px;
+      margin-top: 16px;
     }
 
     .footer-link a {
@@ -220,25 +220,25 @@
     }
 
     .social-login {
-      margin-top: 30px;
+      margin-top: 25px;
       border-top: 1px solid #ddd;
-      padding-top: 20px;
-      font-size: 13px;
+      padding-top: 15px;
+      font-size: 12px;
     }
 
     .social-icons {
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 16px;
       margin-top: 10px;
     }
 
     .social-icons i {
-      font-size: 20px;
+      font-size: 18px;
       color: #444;
       border: 1px solid #ccc;
       border-radius: 50%;
-      padding: 10px;
+      padding: 8px;
       transition: all 0.3s ease;
       cursor: pointer;
     }
@@ -249,13 +249,13 @@
       color: #7f5af0;
     }
 
-    .message-error { color: red; font-size: 14px; }
-    .message-success { color: green; font-size: 14px; }
-    .message-info { color: blue; font-size: 14px; }
+    .message-error { color: red; font-size: 13px; }
+    .message-success { color: green; font-size: 13px; }
+    .message-info { color: blue; font-size: 13px; }
 
     @media (max-width: 480px) {
       .container {
-        padding: 30px 20px;
+        padding: 25px 16px;
       }
     }
 
@@ -313,7 +313,7 @@
       <a href="{{ url_for('auth.forgot_password') }}">Forgot Password?</a>
     </div>
 
-    <label style="font-size: 13px; display: block; margin-top: 10px;">
+    <label style="font-size: 12px; display: block; margin-top: 8px;">
       {{ form.remember() }} Remember Me
     </label>
 
@@ -331,7 +331,7 @@
       <i class="fab fa-facebook-f"></i>
       <i class="fab fa-github"></i>
     </div>
-    <p style="margin-top:10px; font-size:12px; color:#aaa;">This is a demo login page</p>
+    <p style="margin-top:10px; font-size:11px; color:#aaa;">This is a demo login page</p>
   </div>
 </div>
 
