@@ -8,18 +8,16 @@ from botocore.exceptions import NoCredentialsError
 from botocore.config import Config
 import botocore.session
 import urllib3.util.ssl_
-
+from Crypto.Cipher import Blowfish, AES
+from Crypto.Util.Padding import pad, unpad
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
-from Crypto.Cipher import AES, ChaCha20
 
 # ----------------------------- #
 # SSL Fix for CERTIFICATE_VERIFY_FAILED
 # ----------------------------- #
 os.environ['SSL_CERT_FILE'] = certifi.where()
 ssl._create_default_https_context = ssl.create_default_context
-
-# Ensure urllib3 and botocore use certifi as well
 urllib3.util.ssl_.DEFAULT_CA_BUNDLE_PATH = certifi.where()
 session = botocore.session.get_session()
 session.set_config_variable('ca_bundle', certifi.where())
@@ -39,7 +37,6 @@ s3_client = boto3.client(
     region_name=os.getenv("AWS_S3_REGION", "ap-south-1"),
     aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
     aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-    #verify=certifi.where(),
     config=Config(retries={'max_attempts': 3}),
     verify=False
 )
@@ -64,6 +61,19 @@ except Exception as e:
     raise ValueError("Invalid CHACHA_KEY format. Must be base64-encoded 32-byte string.") from e
 
 # ----------------------------- #
+# Blowfish Key Setup
+# ----------------------------- #
+BLOWFISH_KEY = os.getenv("BLOWFISH_KEY")
+if not BLOWFISH_KEY:
+    raise EnvironmentError("BLOWFISH_KEY not found in .env file")
+try:
+    blowfish_key = base64.b64decode(BLOWFISH_KEY + '=' * (-len(BLOWFISH_KEY) % 4))
+except Exception as e:
+    raise ValueError("Invalid BLOWFISH_KEY format. Must be base64-encoded.") from e
+
+BLOWFISH_BLOCK_SIZE = Blowfish.block_size  # 8 bytes
+
+# ----------------------------- #
 # Encryption/Decryption Functions
 # ----------------------------- #
 def encrypt_content(content: str, encryption_type: str) -> str:
@@ -71,6 +81,10 @@ def encrypt_content(content: str, encryption_type: str) -> str:
         return fernet.encrypt(content.encode()).decode()
     elif encryption_type == 'ChaCha':
         return encrypt_chacha(content.encode())
+    elif encryption_type == 'Blowfish':
+        if not blowfish_key:
+            raise ValueError("Blowfish encryption key not loaded.")
+        return encrypt_blowfish(content.encode(), blowfish_key)
     else:
         raise ValueError("Unsupported encryption type.")
 
@@ -86,6 +100,10 @@ def decrypt_content(encrypted_content: str, encryption_type: str) -> str:
         return fernet.decrypt(encrypted_content.encode()).decode()
     elif encryption_type == 'ChaCha':
         return decrypt_chacha(encrypted_content)
+    elif encryption_type == 'Blowfish':
+        if not blowfish_key:
+            raise ValueError("Blowfish decryption requires user-specific key.")
+        return decrypt_blowfish(encrypted_content, blowfish_key)
     else:
         raise ValueError("Unsupported encryption type.")
 
@@ -94,6 +112,9 @@ def decrypt_video_file(input_path: str) -> bytes:
         encrypted = f.read()
     return decrypt_chacha_bytes(encrypted)
 
+# ----------------------------- #
+# ChaCha Encryption
+# ----------------------------- #
 def encrypt_chacha(plain_data: bytes) -> str:
     nonce = os.urandom(12)
     chacha = ChaCha20Poly1305(chacha_key)
@@ -125,6 +146,32 @@ def decrypt_chacha_bytes(enc_data) -> bytes:
     except Exception as e:
         raise ValueError(f"Decryption failed: {e}")
 
+# ----------------------------- #
+# Blowfish Encryption
+# ----------------------------- #
+def encrypt_blowfish(plain_data: bytes, key: bytes) -> str:
+    cipher = Blowfish.new(key, Blowfish.MODE_CBC)
+    iv = cipher.iv
+    padded_data = pad(plain_data, BLOWFISH_BLOCK_SIZE)
+    ciphertext = cipher.encrypt(padded_data)
+    return base64.urlsafe_b64encode(iv + ciphertext).decode()
+
+def decrypt_blowfish(enc_data: str, key: bytes) -> str:
+    enc_data = enc_data.encode()
+    enc_data += b'=' * (-len(enc_data) % 4)
+    raw = base64.urlsafe_b64decode(enc_data)
+    iv = raw[:BLOWFISH_BLOCK_SIZE]
+    ciphertext = raw[BLOWFISH_BLOCK_SIZE:]
+    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+    decrypted = unpad(cipher.decrypt(ciphertext), BLOWFISH_BLOCK_SIZE)
+    return decrypted.decode()
+
+
+
+
+# ----------------------------- #
+# AES Note Encryption
+# ----------------------------- #
 def encrypt_note_content(content, key):
     cipher = AES.new(key, AES.MODE_EAX)
     ciphertext, tag = cipher.encrypt_and_digest(content.encode())
@@ -171,7 +218,6 @@ def download_file_from_s3(filename: str) -> bytes:
         print(f"❌ S3 download failed: {e}")
         return None
 
-
 def delete_file_from_s3(filename: str) -> bool:
     try:
         s3_client.delete_object(
@@ -182,3 +228,26 @@ def delete_file_from_s3(filename: str) -> bool:
     except Exception as e:
         print("Delete failed:", e)
         return False
+def encrypt_blowfish_bytes(plain_data: bytes, key: bytes) -> bytes:
+    cipher = Blowfish.new(key, Blowfish.MODE_CBC)
+    iv = cipher.iv
+    padded_data = pad(plain_data, BLOWFISH_BLOCK_SIZE)
+    ciphertext = cipher.encrypt(padded_data)
+    return iv + ciphertext
+
+def decrypt_blowfish_bytes(encrypted_data: bytes, key: bytes) -> bytes:
+    iv = encrypted_data[:BLOWFISH_BLOCK_SIZE]
+    ciphertext = encrypted_data[BLOWFISH_BLOCK_SIZE:]
+    cipher = Blowfish.new(key, Blowfish.MODE_CBC, iv)
+    decrypted = unpad(cipher.decrypt(ciphertext), BLOWFISH_BLOCK_SIZE)
+    return decrypted
+def encrypt_video_file_blowfish(input_path: str, output_path: str):
+    with open(input_path, 'rb') as f:
+        file_data = f.read()
+    encrypted_bytes = encrypt_blowfish_bytes(file_data, blowfish_key)
+    with open(output_path, 'wb') as f:
+        f.write(encrypted_bytes)
+def decrypt_video_file_blowfish(input_path: str) -> bytes:
+    with open(input_path, 'rb') as f:
+        encrypted_bytes = f.read()
+    return decrypt_blowfish_bytes(encrypted_bytes, blowfish_key)
